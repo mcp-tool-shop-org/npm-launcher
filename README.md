@@ -6,11 +6,22 @@
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/actions"><img src="https://github.com/mcp-tool-shop-org/npm-launcher/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@mcptoolshop/npm-launcher"><img src="https://img.shields.io/npm/v/@mcptoolshop/npm-launcher" alt="npm version"></a>
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+  <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
 Generic GitHub-release binary launcher for npm. Downloads platform-specific binaries from GitHub Releases, caches them locally, verifies SHA256 checksums, and runs them with full arg passthrough.
 
 Built so Python CLIs (or any compiled binary) get zero-dependency `npx` distribution.
+
+## Security & Threat Model
+
+npm-launcher downloads and executes binaries. Here's what it touches and what it doesn't:
+
+- **Network:** HTTPS only, to `github.com` and GitHub's CDN. No other destinations.
+- **Filesystem:** Writes to local cache only (`~/.cache/mcptoolshop/` or `%LOCALAPPDATA%\mcptoolshop\`). Does not modify system files or read outside the cache.
+- **Verification:** Every binary is checked against SHA256 from a `checksums-<version>.txt` file in the same release. Mismatches abort execution and delete the downloaded file.
+- **No telemetry.** No secrets handling. No credentials stored or transmitted.
+- **Permissions:** None required beyond normal user filesystem access and outbound HTTPS.
 
 ## How It Works
 
@@ -36,6 +47,14 @@ npx @mcptoolshop/sovereignty tutorial
              run binary
 ```
 
+## Install
+
+```bash
+npm install @mcptoolshop/npm-launcher
+```
+
+This package is a library for wrapper packages — end users install the wrapper (e.g. `npx @mcptoolshop/sovereignty`), not this directly.
+
 ## Config Contract
 
 Wrappers pass pure JSON via `MCPTOOLSHOP_LAUNCH_CONFIG`. No functions, no magic.
@@ -47,6 +66,7 @@ Wrappers pass pure JSON via `MCPTOOLSHOP_LAUNCH_CONFIG`. No functions, no magic.
 | `repo`     | yes      | `"sovereignty"`        | GitHub repo name                     |
 | `version`  | yes      | `"1.4.0"`              | Semver (no `v` prefix)               |
 | `tag`      | no       | `"v1.4.0"`             | Git tag (defaults to `v<version>`)   |
+| `quiet`    | no       | `true`                 | Suppress progress messages           |
 
 ## Asset Naming Convention
 
@@ -75,7 +95,7 @@ A wrapper is a tiny npm package (~3 files):
   "name": "@mcptoolshop/sovereignty",
   "version": "1.4.0",
   "bin": { "sovereignty": "bin/sovereignty.js" },
-  "dependencies": { "@mcptoolshop/npm-launcher": "^0.1.0" }
+  "dependencies": { "@mcptoolshop/npm-launcher": "^1.0.0" }
 }
 ```
 
@@ -92,6 +112,12 @@ require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
 See `examples/` for complete wrapper templates and CI workflow.
+
+## Environment Variables
+
+| Variable | Effect |
+|----------|--------|
+| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | Suppress progress messages (errors still print) |
 
 ## Supported Platforms
 
