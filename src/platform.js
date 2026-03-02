@@ -14,12 +14,19 @@ function resolveTarget() {
     const supported = Object.keys(SUPPORTED)
       .map((k) => k.replace("win32", "windows"))
       .join(", ");
+    let hint = "";
+    if (process.platform === "darwin" && process.arch !== "arm64" && process.arch !== "x64") {
+      hint = "\n  Hint: On Apple Silicon, try running under Rosetta: arch -x86_64 npx ...";
+    }
+    if (process.platform === "linux" && process.arch === "arm64") {
+      hint = "\n  Hint: linux-arm64 is not yet supported. x64 binaries may work under QEMU/box64.";
+    }
     throw new Error(
       `Unsupported platform: ${process.platform}/${process.arch}\n` +
-      `Supported: ${supported}`
+      `  Supported: ${supported}${hint}`
     );
   }
   return target;
 }
 
-module.exports = { resolveTarget };
+module.exports = { resolveTarget, SUPPORTED };

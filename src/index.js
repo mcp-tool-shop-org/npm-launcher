@@ -79,9 +79,14 @@ async function ensureBinary(config) {
   process.stderr.write(`Downloading ${asset}...\n`);
   await downloadToFile(assetUrl, binPath);
 
-  // Verify checksum
+  // Verify checksum — delete on mismatch so next run retries
   process.stderr.write("Verifying SHA256...\n");
-  verifySha256(binPath, expected);
+  try {
+    verifySha256(binPath, expected);
+  } catch (err) {
+    try { fs.unlinkSync(binPath); } catch {}
+    throw err;
+  }
 
   // Make executable on Unix
   if (process.platform !== "win32") {
