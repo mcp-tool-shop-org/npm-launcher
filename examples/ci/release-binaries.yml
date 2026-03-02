@@ -12,6 +12,7 @@ name: Release Binaries
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 env:
   TOOL_NAME: sovereignty  # change per repo
@@ -32,9 +33,7 @@ jobs:
           - os: macos-latest
             target: darwin-arm64
             ext: ""
-          - os: macos-13
-            target: darwin-x64
-            ext: ""
+          # darwin-x64 omitted: macos-13 deprecated, arm64 binary works via Rosetta
           - os: windows-latest
             target: win-x64
             ext: ".exe"
@@ -49,16 +48,18 @@ jobs:
       - run: uv venv
 
       - name: Install dependencies + PyInstaller
-        run: uv pip install . pyinstaller
+        run: uv pip install . "pyinstaller>=6.9.0"
 
       - name: Build binary
+        shell: bash
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          uv run pyinstaller --onefile --name "${{ env.TOOL_NAME }}" --console "${{ env.ENTRYPOINT }}"
+          uv run pyinstaller --onefile --name "${{ env.TOOL_NAME }}" --console \
+            --collect-submodules rich \
+            "${{ env.ENTRYPOINT }}"
           OUTNAME="${{ env.TOOL_NAME }}-${VERSION}-${{ matrix.target }}${{ matrix.ext }}"
           mv "dist/${{ env.TOOL_NAME }}${{ matrix.ext }}" "dist/${OUTNAME}"
           echo "ASSET_NAME=${OUTNAME}" >> "$GITHUB_ENV"
-        shell: bash
 
       - uses: actions/upload-artifact@v4
         with:
@@ -77,6 +78,7 @@ jobs:
           merge-multiple: true
 
       - name: Generate checksums
+        shell: bash
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           cd artifacts
