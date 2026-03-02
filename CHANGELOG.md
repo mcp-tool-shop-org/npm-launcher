@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-03-02
+
+### Added
+
+- `--print-cache-path`: show where binaries are cached for this tool+version
+- `--clear-cache`: remove cached binaries (useful for support + fresh re-download)
+
+### Changed
+
+- Example CI workflow: drop macos-13 (deprecated), add `--collect-submodules rich`, pin `pyinstaller>=6.9.0`
+
 ## [1.0.0] - 2026-03-02
 
 ### Added
