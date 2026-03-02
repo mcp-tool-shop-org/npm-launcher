@@ -1,0 +1,14 @@
+{
+  "name": "@mcptoolshop/sovereignty",
+  "version": "1.4.0",
+  "description": "Sovereignty: print-and-play board game with optional digital console",
+  "type": "commonjs",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@mcptoolshop/npm-launcher": "^0.1.0"
+  },
+  "bin": {
+    "sovereignty": "bin/sovereignty.js"
+  }
+}

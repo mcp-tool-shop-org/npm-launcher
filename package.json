@@ -1,0 +1,33 @@
+{
+  "name": "@mcptoolshop/npm-launcher",
+  "version": "0.1.0",
+  "description": "Generic GitHub-release binary launcher with cache + SHA256 verification",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "bin": {
+    "mcptoolshop-launch": "bin/mcptoolshop-launch.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "launcher",
+    "binary",
+    "github-releases",
+    "pyinstaller",
+    "cli"
+  ],
+  "author": "mcp-tool-shop",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcp-tool-shop-org/npm-launcher.git"
+  },
+  "homepage": "https://github.com/mcp-tool-shop-org/npm-launcher"
+}
