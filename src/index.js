@@ -7,6 +7,8 @@ const { toolCacheDir, ensureDir } = require("./cache");
 const { releaseAssetUrl, downloadToFile, get } = require("./github");
 const { parseChecksumsTxt, verifySha256 } = require("./verify");
 const { runBinary } = require("./run");
+const { acquireLock } = require("./lock");
+const { setQuiet, info } = require("./log");
 
 /**
  * Config contract (pure JSON, no functions):
@@ -16,6 +18,7 @@ const { runBinary } = require("./run");
  *   repo        - GitHub repo name, e.g. "sovereignty"
  *   version     - semver without v prefix, e.g. "1.4.0"
  *   tag         - git tag, default "v<version>"
+ *   quiet       - suppress progress messages (default false)
  *
  * Asset naming convention (locked):
  *   binary:    <toolName>-<version>-<os>-<arch><ext>
@@ -35,6 +38,8 @@ function checksumsAssetName(version) {
  * Returns the absolute path to the executable.
  */
 async function ensureBinary(config) {
+  if (config.quiet) setQuiet(true);
+
   const target = resolveTarget();
   const tag = config.tag || `v${config.version}`;
   const asset = assetName(config.toolName, config.version, target);
@@ -50,51 +55,67 @@ async function ensureBinary(config) {
     return binPath;
   }
 
-  // Download checksums
-  const checksumsUrl = releaseAssetUrl(config.owner, config.repo, tag, checksumsFile);
-  process.stderr.write(`Fetching checksums from ${config.owner}/${config.repo}@${tag}...\n`);
-
-  const checksumsRes = await get(checksumsUrl);
-  if (checksumsRes.status !== 200) {
-    throw new Error(
-      `Failed to fetch checksums (HTTP ${checksumsRes.status})\n` +
-      `  URL: ${checksumsUrl}\n` +
-      `  Hint: Does release ${tag} exist with a ${checksumsFile} asset?`
-    );
-  }
-
-  const checksums = parseChecksumsTxt(checksumsRes.body);
-  const expected = checksums.get(asset);
-  if (!expected) {
-    const available = [...checksums.keys()].join(", ") || "(none)";
-    throw new Error(
-      `No checksum found for asset: ${asset}\n` +
-      `  Available assets in ${checksumsFile}: ${available}\n` +
-      `  Hint: Is this platform supported for ${config.toolName} ${config.version}?`
-    );
-  }
-
-  // Download binary
-  const assetUrl = releaseAssetUrl(config.owner, config.repo, tag, asset);
-  process.stderr.write(`Downloading ${asset}...\n`);
-  await downloadToFile(assetUrl, binPath);
-
-  // Verify checksum — delete on mismatch so next run retries
-  process.stderr.write("Verifying SHA256...\n");
+  // Acquire lock to prevent concurrent download races
+  const releaseLock = await acquireLock(cacheDir, asset);
   try {
-    verifySha256(binPath, expected);
-  } catch (err) {
-    try { fs.unlinkSync(binPath); } catch {}
-    throw err;
-  }
+    // Double-check after acquiring lock (another process may have finished)
+    if (fs.existsSync(binPath)) {
+      return binPath;
+    }
 
-  // Make executable on Unix
-  if (process.platform !== "win32") {
-    fs.chmodSync(binPath, 0o755);
-  }
+    // Download checksums
+    const checksumsUrl = releaseAssetUrl(config.owner, config.repo, tag, checksumsFile);
+    info(`Fetching checksums from ${config.owner}/${config.repo}@${tag}...`);
 
-  process.stderr.write("Ready.\n");
-  return binPath;
+    const checksumsRes = await get(checksumsUrl);
+    if (checksumsRes.status !== 200) {
+      throw new Error(
+        `Failed to fetch checksums (HTTP ${checksumsRes.status})\n` +
+        `  URL: ${checksumsUrl}\n` +
+        `  Hint: Does release ${tag} exist with a ${checksumsFile} asset?\n` +
+        `  Check: https://github.com/${config.owner}/${config.repo}/releases/tag/${tag}`
+      );
+    }
+
+    const checksums = parseChecksumsTxt(checksumsRes.body);
+    const expected = checksums.get(asset);
+    if (!expected) {
+      const available = [...checksums.keys()];
+      const listing = available.length > 0
+        ? available.map((a) => `    - ${a}`).join("\n")
+        : "    (none)";
+      throw new Error(
+        `No checksum found for asset: ${asset}\n` +
+        `  Available assets in ${checksumsFile}:\n${listing}\n` +
+        `  Hint: Is ${target.os}-${target.arch} supported for ${config.toolName} ${config.version}?\n` +
+        `  Did the CI build complete for this platform?`
+      );
+    }
+
+    // Download binary
+    const assetUrl = releaseAssetUrl(config.owner, config.repo, tag, asset);
+    info(`Downloading ${asset}...`);
+    await downloadToFile(assetUrl, binPath);
+
+    // Verify checksum — delete on mismatch so next run retries
+    info("Verifying SHA256...");
+    try {
+      verifySha256(binPath, expected);
+    } catch (err) {
+      try { fs.unlinkSync(binPath); } catch {}
+      throw err;
+    }
+
+    // Make executable on Unix
+    if (process.platform !== "win32") {
+      fs.chmodSync(binPath, 0o755);
+    }
+
+    info("Ready.");
+    return binPath;
+  } finally {
+    releaseLock();
+  }
 }
 
 /**

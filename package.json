@@ -7,6 +7,10 @@
   "bin": {
     "mcptoolshop-launch": "bin/mcptoolshop-launch.js"
   },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "verify": "node --test test/*.test.js"
+  },
   "engines": {
     "node": ">=18"
   },
