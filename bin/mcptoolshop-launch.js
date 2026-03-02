@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-const { launch } = require("../src/index");
+const { launch, printCachePath, clearCache } = require("../src/index");
 
 // Wrappers pass config as JSON via environment variable.
 const raw = process.env.MCPTOOLSHOP_LAUNCH_CONFIG;
@@ -31,6 +31,19 @@ if (missing.length > 0) {
     `Error: Missing required config fields: ${missing.join(", ")}\n`
   );
   process.exit(2);
+}
+
+// Launcher-level commands (intercepted before binary launch)
+const arg1 = process.argv[2];
+
+if (arg1 === "--print-cache-path") {
+  printCachePath(config);
+  process.exit(0);
+}
+
+if (arg1 === "--clear-cache") {
+  clearCache(config);
+  process.exit(0);
 }
 
 launch(config, process.argv).catch((err) => {

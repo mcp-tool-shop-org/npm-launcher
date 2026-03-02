@@ -128,4 +128,41 @@ async function launch(config, argv) {
   process.exit(code);
 }
 
-module.exports = { launch, ensureBinary, assetName, checksumsAssetName };
+/**
+ * Print the cache directory for a tool+version (or the root cache dir).
+ */
+function printCachePath(config) {
+  const { defaultCacheDir } = require("./cache");
+  if (config && config.toolName && config.version) {
+    console.log(toolCacheDir(config.toolName, config.version));
+  } else if (config && config.toolName) {
+    console.log(path.join(defaultCacheDir(), config.toolName));
+  } else {
+    console.log(defaultCacheDir());
+  }
+}
+
+/**
+ * Clear cached binaries for a tool (all versions) or a specific version.
+ */
+function clearCache(config) {
+  const { defaultCacheDir } = require("./cache");
+  let target;
+  if (config && config.toolName && config.version) {
+    target = toolCacheDir(config.toolName, config.version);
+  } else if (config && config.toolName) {
+    target = path.join(defaultCacheDir(), config.toolName);
+  } else {
+    target = defaultCacheDir();
+  }
+
+  if (!fs.existsSync(target)) {
+    process.stderr.write(`Nothing to clear: ${target}\n`);
+    return;
+  }
+
+  fs.rmSync(target, { recursive: true, force: true });
+  process.stderr.write(`Cleared: ${target}\n`);
+}
+
+module.exports = { launch, ensureBinary, assetName, checksumsAssetName, printCachePath, clearCache };
