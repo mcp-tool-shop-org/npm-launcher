@@ -15,7 +15,7 @@ export const config: SiteConfig = {
     headlineAccent: 'npx anything, anywhere.',
     description: 'Download, cache, verify, and run platform-specific binaries from GitHub Releases. One shared launcher for every CLI in your ecosystem.',
     primaryCta: { href: '#usage', label: 'Get started' },
-    secondaryCta: { href: '#features', label: 'How it works' },
+    secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
     previews: [
       { label: 'End user', code: 'npx @mcptoolshop/sovereignty tutorial' },
       { label: 'Wrapper', code: 'process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({\n  toolName: "sovereignty",\n  owner: "mcp-tool-shop-org",\n  repo: "sovereignty",\n  version: "1.4.0",\n});\nrequire("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");' },
