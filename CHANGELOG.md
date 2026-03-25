@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-03-25
+
+### Added
+
+- `--version` / `-V` flag — prints version and exits (works without config)
+- `--help` / `-h` flag — full CLI usage documentation (works without config)
+- CHANGELOG.md included in npm tarball
+- 4 new CLI flag tests (17 total)
+
+### Changed
+
+- CI matrix updated from Node 18+22 to Node 20+22 (18 is EOL)
+- CI now smoke-tests `--version` and `--help` flags
+
 ## [1.1.0] - 2026-03-02
 
 ### Added

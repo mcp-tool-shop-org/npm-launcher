@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const crypto = require("crypto");
+const { execFileSync } = require("child_process");
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -12,6 +13,42 @@ const { parseChecksumsTxt, verifySha256, sha256File } = require("../src/verify")
 const { resolveTarget, SUPPORTED } = require("../src/platform");
 const { toolCacheDir, ensureDir, defaultCacheDir } = require("../src/cache");
 const { acquireLock } = require("../src/lock");
+
+const CLI_PATH = path.join(__dirname, "..", "bin", "mcptoolshop-launch.js");
+const pkg = require("../package.json");
+
+// -- CLI flag tests --
+
+test("--version prints version and exits 0", () => {
+  const out = execFileSync(process.execPath, [CLI_PATH, "--version"], {
+    encoding: "utf8",
+  });
+  assert.match(out.trim(), new RegExp(`^mcptoolshop-launch ${pkg.version.replace(/\./g, "\\.")}$`));
+});
+
+test("-V prints version and exits 0", () => {
+  const out = execFileSync(process.execPath, [CLI_PATH, "-V"], {
+    encoding: "utf8",
+  });
+  assert.match(out.trim(), /^mcptoolshop-launch \d+\.\d+\.\d+$/);
+});
+
+test("--help prints usage and exits 0", () => {
+  const out = execFileSync(process.execPath, [CLI_PATH, "--help"], {
+    encoding: "utf8",
+  });
+  assert.ok(out.includes("USAGE"));
+  assert.ok(out.includes("--version"));
+  assert.ok(out.includes("--print-cache-path"));
+  assert.ok(out.includes("MCPTOOLSHOP_LAUNCH_CONFIG"));
+});
+
+test("-h prints usage and exits 0", () => {
+  const out = execFileSync(process.execPath, [CLI_PATH, "-h"], {
+    encoding: "utf8",
+  });
+  assert.ok(out.includes("USAGE"));
+});
 
 // -- Unit tests for verify.js --
 

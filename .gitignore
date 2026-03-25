@@ -2,3 +2,5 @@ node_modules/
 site/.astro/
 site/dist/
 .polyglot-cache.json
+coverage/
+*.tmp
