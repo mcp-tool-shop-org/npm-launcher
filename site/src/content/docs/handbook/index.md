@@ -20,6 +20,7 @@ When a user runs your wrapper package, npm-launcher:
 
 ## What's in this handbook
 
+- **[Beginners](/npm-launcher/handbook/beginners/)** -- New to npm-launcher? Start here for a plain-language walkthrough
 - **[Getting Started](/npm-launcher/handbook/getting-started/)** -- Install npm-launcher and understand the basic flow
 - **[Configuration](/npm-launcher/handbook/configuration/)** -- The config contract, asset naming, environment variables, and cache locations
 - **[Security](/npm-launcher/handbook/security/)** -- SHA256 verification, threat model, and what npm-launcher does and does not touch
@@ -27,7 +28,7 @@ When a user runs your wrapper package, npm-launcher:
 
 ## Design principles
 
-- **Zero dependencies.** Pure Node.js stdlib. Nothing to audit, nothing to break. Ships at 8 kB.
+- **Zero dependencies.** Pure Node.js stdlib. Nothing to audit, nothing to break. Under 15 kB of source code.
 - **Cache-first.** Downloads once per version, then runs from local cache. Second launch is instant.
 - **Verify everything.** Every binary is checked against SHA256 checksums from the same GitHub Release. Mismatches abort and clean up.
 - **Concurrent-safe.** File locking prevents race conditions when multiple npx invocations hit the same binary.

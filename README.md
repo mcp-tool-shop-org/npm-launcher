@@ -115,7 +115,7 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-See `examples/` for complete wrapper templates and CI workflow.
+See `examples/sovereignty/` and `examples/xrpl-camp/` for complete wrapper templates, and `examples/ci/release-binaries.yml` for a PyInstaller CI workflow.
 
 ## Environment Variables
 

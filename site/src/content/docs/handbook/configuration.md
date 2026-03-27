@@ -56,8 +56,19 @@ Downloaded binaries are stored per-tool, per-version:
 
 | OS      | Path                                           |
 |---------|-------------------------------------------------|
-| Linux   | `~/.cache/mcptoolshop/<tool>/<version>/`        |
+| Linux   | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/` (defaults to `~/.cache/mcptoolshop/`) |
 | macOS   | `~/.cache/mcptoolshop/<tool>/<version>/`        |
 | Windows | `%LOCALAPPDATA%\mcptoolshop\<tool>\<version>\`  |
 
+On Linux, npm-launcher respects the `XDG_CACHE_HOME` environment variable. If unset, it defaults to `~/.cache`.
+
 The cache is safe to delete at any time. npm-launcher will re-download and re-verify on next launch.
+
+## Cache management
+
+Two CLI flags help manage the cache:
+
+- `--print-cache-path` -- prints the cache directory for the configured tool and version
+- `--clear-cache` -- removes all cached binaries for the configured tool
+
+These flags are intercepted by the launcher before the binary runs, so they work even if the binary is not yet downloaded.

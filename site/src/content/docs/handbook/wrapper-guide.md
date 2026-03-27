@@ -64,13 +64,15 @@ Your CI workflow should:
 2. Generate a `checksums-<version>.txt` file using `sha256sum`
 3. Upload everything to a GitHub Release tagged with `v<version>`
 
-Example CI snippet for a Python tool:
+A complete example CI workflow for Python tools lives in the repo at `examples/ci/release-binaries.yml`. It builds with PyInstaller across Linux, macOS, and Windows, generates checksums, and uploads everything to a GitHub Release.
+
+The key steps are:
 
 ```bash
 # Build with PyInstaller
 pyinstaller --onefile --name my-tool src/__main__.py
 
-# Generate checksums
+# Generate checksums (GNU coreutils format)
 sha256sum dist/* > checksums-1.0.0.txt
 ```
 

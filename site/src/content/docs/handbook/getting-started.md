@@ -50,6 +50,19 @@ npx @mcptoolshop/sovereignty tutorial
 | macOS x64     | `<tool>-<ver>-darwin-x64`    |
 | Windows x64   | `<tool>-<ver>-win-x64.exe`  |
 
+## CLI flags
+
+npm-launcher provides built-in flags that work on any wrapper:
+
+| Flag | Description |
+|------|-------------|
+| `--version`, `-V` | Print the launcher version and exit (works without config) |
+| `--help`, `-h` | Show full CLI usage documentation (works without config) |
+| `--print-cache-path` | Show where binaries are cached for the configured tool |
+| `--clear-cache` | Remove cached binaries for the configured tool |
+
+The `--version` and `--help` flags work even without `MCPTOOLSHOP_LAUNCH_CONFIG` set. The cache management flags require a configured wrapper.
+
 ## Quick example
 
 A minimal wrapper package has three files: `package.json`, a bin script, and a dependency on npm-launcher. See the [Wrapper Guide](/npm-launcher/handbook/wrapper-guide/) for the complete walkthrough.

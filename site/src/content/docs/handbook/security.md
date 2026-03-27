@@ -42,6 +42,8 @@ Downloads write to a temporary `.tmp` file first. The rename into cache only hap
 
 File locking prevents race conditions when multiple npx invocations attempt to download the same binary simultaneously. Only one process downloads; others wait for the lock, then use the cached result.
 
+The lock implementation uses atomic file creation (`O_CREAT | O_EXCL`) and writes the owning process PID. Locks older than 60 seconds are considered stale and broken automatically. Waiting processes poll every 500 ms and give up after 30 seconds with a clear error message.
+
 ## Supply chain considerations
 
 The security of npm-launcher depends on the integrity of:

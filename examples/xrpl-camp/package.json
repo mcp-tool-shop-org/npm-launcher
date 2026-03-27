@@ -4,9 +4,9 @@
   "description": "XRPL Camp: hands-on XRP Ledger training workbook",
   "type": "commonjs",
   "license": "MIT",
-  "engines": { "node": ">=18" },
+  "engines": { "node": ">=20" },
   "dependencies": {
-    "@mcptoolshop/npm-launcher": "^0.1.0"
+    "@mcptoolshop/npm-launcher": "^1.0.0"
   },
   "bin": {
     "xrpl-camp": "bin/xrpl-camp.js"
