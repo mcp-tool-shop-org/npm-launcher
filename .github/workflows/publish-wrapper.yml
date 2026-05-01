@@ -1,0 +1,67 @@
+# Publish a wrapper from examples/<tool>/ to npm.
+#
+# Pre-condition: the wrapper at examples/<tool>/ is already bumped to the
+# target version + committed to main. This workflow validates the version
+# match and refuses to publish if examples/<tool>/package.json is stale.
+# Bumping must happen in a regular commit/PR, not inside this workflow.
+#
+# Auth: NPM_TOKEN repository secret (legacy classic token; provenance via
+# OIDC trusted publishing is a future migration).
+#
+# Usage:
+#   gh workflow run publish-wrapper.yml -f tool=xrpl-lab -f version=1.6.0
+
+name: Publish wrapper
+
+on:
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: 'Tool name — must match examples/<tool>/ directory'
+        required: true
+        type: string
+      version:
+        description: 'Version expected in examples/<tool>/package.json (must match)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-wrapper-${{ inputs.tool }}-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify wrapper exists + version matches
+        working-directory: examples/${{ inputs.tool }}
+        run: |
+          test -f package.json || { echo "::error::examples/${{ inputs.tool }}/package.json missing"; exit 1; }
+          test -f "bin/${{ inputs.tool }}.js" || { echo "::error::examples/${{ inputs.tool }}/bin/${{ inputs.tool }}.js missing"; exit 1; }
+          ACTUAL=$(node -p "require('./package.json').version")
+          EXPECTED="${{ inputs.version }}"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::package.json version is '$ACTUAL', expected '$EXPECTED'. Bump the wrapper files + commit to main before dispatching this workflow."
+            exit 1
+          fi
+          echo "Wrapper verified at $EXPECTED"
+
+      - name: Pre-publish inspect
+        working-directory: examples/${{ inputs.tool }}
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        working-directory: examples/${{ inputs.tool }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
