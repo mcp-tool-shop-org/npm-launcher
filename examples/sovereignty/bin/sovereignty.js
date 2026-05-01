@@ -2,14 +2,14 @@
 "use strict";
 
 // Pure JSON config — launcher derives asset names from convention:
-//   binary:    sovereignty-1.4.0-linux-x64
-//   checksums: checksums-1.4.0.txt
+//   binary:    sovereignty-2.0.2-linux-x64
+//   checksums: checksums-2.0.2.txt
 process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
   toolName: "sovereignty",
   owner: "mcp-tool-shop-org",
   repo: "sovereignty",
-  version: "1.4.0",
-  tag: "v1.4.0",
+  version: "2.0.2",
+  tag: "v2.0.2",
 });
 
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
