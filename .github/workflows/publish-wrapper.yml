@@ -48,13 +48,26 @@ jobs:
         run: |
           test -f package.json || { echo "::error::examples/${{ inputs.tool }}/package.json missing"; exit 1; }
           test -f "bin/${{ inputs.tool }}.js" || { echo "::error::examples/${{ inputs.tool }}/bin/${{ inputs.tool }}.js missing"; exit 1; }
+          # README + LICENSE are listed in package.json `files` but npm publish
+          # silently skips missing entries — leaving the npmjs.com page blank.
+          # Sovereignty 2.0.2 + 2.1.0 shipped blank because of this; refuse
+          # to publish here so the gap can't recur.
+          test -f README.md || { echo "::error::examples/${{ inputs.tool }}/README.md missing — copy from the tool repo before publishing (see memory/npm-launcher.md Step 0). npm publish would silently ship a blank package page."; exit 1; }
+          test -f LICENSE || { echo "::error::examples/${{ inputs.tool }}/LICENSE missing — copy from the tool repo before publishing."; exit 1; }
+          # README must not be the trivial 1-line stub — guard against the
+          # "I created the file but didn't copy real content" failure mode.
+          README_BYTES=$(wc -c < README.md)
+          if [ "$README_BYTES" -lt 200 ]; then
+            echo "::error::examples/${{ inputs.tool }}/README.md is only ${README_BYTES} bytes — looks like a stub. Copy the real README from the tool repo."
+            exit 1
+          fi
           ACTUAL=$(node -p "require('./package.json').version")
           EXPECTED="${{ inputs.version }}"
           if [ "$ACTUAL" != "$EXPECTED" ]; then
             echo "::error::package.json version is '$ACTUAL', expected '$EXPECTED'. Bump the wrapper files + commit to main before dispatching this workflow."
             exit 1
           fi
-          echo "Wrapper verified at $EXPECTED"
+          echo "Wrapper verified at $EXPECTED (README ${README_BYTES} bytes, LICENSE present)"
 
       - name: Pre-publish inspect
         working-directory: examples/${{ inputs.tool }}
