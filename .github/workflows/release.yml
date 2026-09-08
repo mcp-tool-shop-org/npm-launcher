@@ -101,7 +101,18 @@ jobs:
             exit 1
           fi
 
-      - run: npm ci
+      - name: Install dependencies (lockfile-aware)
+        run: |
+          # This package ships zero dependencies and therefore has no
+          # package-lock.json; `npm ci` hard-fails with EUSAGE when one is
+          # absent. Install only when there is something to install rather than
+          # committing an empty lockfile to satisfy the command.
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "no package-lock.json (zero-dependency package) - using npm install"
+            npm install --no-audit --no-fund
+          fi
 
       - name: Verify (repo's own contract — test suite)
         run: npm run verify
