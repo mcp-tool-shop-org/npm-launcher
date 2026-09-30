@@ -1,28 +1,41 @@
 # npm-launcher: how it works
 
-Mapped at 2026-09-25 from commit bb50ee9.
+Mapped at 2026-09-30 from commit 7269308 by Atlas 1.24.0.
 
 ## What this is
 
-10 parts, mostly JavaScript (15 files) and TypeScript (2). Work enters through 6 doors; the busiest is CI, which reaches 3 parts. It publishes a package to npm, chosen at run time. People run mcptoolshop-launch. People import @mcptoolshop/npm-launcher.
+10 parts, mostly JavaScript (15 files), CSS (2), TypeScript (2), Astro (1) and shell (1). Work enters through 10 doors; the busiest is CI, which reaches 3 parts. It publishes @mcptoolshop/npm-launcher, @mcptoolshop/backpropagate (examples/backpropagate), @mcptoolshop/sovereignty (examples/sovereignty), @mcptoolshop/xrpl-camp (examples/xrpl-camp) and @mcptoolshop/xrpl-lab (examples/xrpl-lab) to npm. It deploys a site to GitHub Pages. People run backpropagate, mcptoolshop-launch, sovereignty, xrpl-camp and xrpl-lab. People import @mcptoolshop/npm-launcher.
 
-## What changed since the last map
+## What changed since 2026-09-25 (bb50ee9)
 
-This is the first map.
+- CI's pull request trigger now also names `codecov.yml`.
+- CI's push trigger now also names `codecov.yml`.
+- backpropagate (examples/backpropagate/package.json) is a new command. It runs examples/backpropagate/bin/backpropagate.js.
+- And 3 more changes to doors.
+- examples/backpropagate/LICENSE is now read by .github/workflows/publish-wrapper.yml.
+- examples/backpropagate/README.md is now read by .github/workflows/publish-wrapper.yml.
+- examples/backpropagate/package.json is now read by .github/workflows/publish-wrapper.yml.
+- And 9 more new writers and readers of places.
+- 1 file added and 1 changed content, across 2 parts.
 
 ## What comes in
 
-1. **CI.** On a pull request touching 9 paths; on a push touching 9 paths; or by hand. Runs bin/mcptoolshop-launch.js and test/.
+1. **CI.** On a pull request touching 10 paths; on a push touching 10 paths; or by hand. Runs bin/mcptoolshop-launch.js and test/.
 2. **Release.** When a tag matching `v*` is pushed; or by hand. Runs test/.
 3. **Deploy site to GitHub Pages.** On a push to main touching 2 paths; or by hand. Runs site/astro.config.mjs and site/src/.
 4. **Publish wrapper.** By hand. Runs no file this map can see.
 5. **mcptoolshop-launch** (a command people run). Runs bin/mcptoolshop-launch.js.
 6. **@mcptoolshop/npm-launcher** (the package people import). Loads src/index.js.
+7. **backpropagate** (a command people run). Runs examples/backpropagate/bin/backpropagate.js.
+8. **sovereignty** (a command people run). Runs examples/sovereignty/bin/sovereignty.js.
+9. **xrpl-camp** (a command people run). Runs examples/xrpl-camp/bin/xrpl-camp.js.
+10. **xrpl-lab** (a command people run). Runs examples/xrpl-lab/bin/xrpl-lab.js.
 
 ## What happens through CI
 
 1. The workflow runs bin/mcptoolshop-launch.js in bin and test/ in test.
 2. That reaches src (8 files).
+3. It uploads coverage to Codecov.
 
 ## Who reads the results
 
@@ -34,11 +47,19 @@ CI writes nothing this map can see.
 
 **Deploy site to GitHub Pages** runs site/astro.config.mjs and site/src/, and deploys the site.
 
-**Publish wrapper** runs no file this map can see and publishes a package to npm, chosen at run time.
+**Publish wrapper** runs no file this map can see and publishes @mcptoolshop/backpropagate (examples/backpropagate), @mcptoolshop/sovereignty (examples/sovereignty), @mcptoolshop/xrpl-camp (examples/xrpl-camp) and @mcptoolshop/xrpl-lab (examples/xrpl-lab) to npm.
 
 **mcptoolshop-launch** (a command people run) runs bin/mcptoolshop-launch.js and reaches src.
 
 **@mcptoolshop/npm-launcher** (the package people import) loads src/index.js.
+
+**backpropagate** (a command people run) runs examples/backpropagate/bin/backpropagate.js.
+
+**sovereignty** (a command people run) runs examples/sovereignty/bin/sovereignty.js.
+
+**xrpl-camp** (a command people run) runs examples/xrpl-camp/bin/xrpl-camp.js.
+
+**xrpl-lab** (a command people run) runs examples/xrpl-lab/bin/xrpl-lab.js.
 
 ## What breaks what
 
@@ -79,7 +100,7 @@ People write .github/, the repository root and site/. Nothing in this repository
 
 ## Where to start
 
-.github/workflows/ci.yml → bin/mcptoolshop-launch.js → src/index.js
+.github/workflows/ci.yml → bin/mcptoolshop-launch.js → src/index.js → src/log.js
 
 Read those in order to follow one pull request end to end.
 
@@ -87,8 +108,9 @@ Read those in order to follow one pull request end to end.
 
 - 3 reads use paths built at run time and are not named here.
 - 4 writes and 5 reads go to a path their caller passes, not to this repository.
-- 3 writes and 5 reads go to the home directory (.local/) or a path their caller passes, not to this repository.
-- 3 commands are built at run time and not followed.
-- Statistics confidence is low: fewer than 30 qualifying commits in the window, and fewer than 20 source files reach 10 revisions.
+- 3 writes and 5 reads go to the home directory (.local/ and backpropagate/) or a path their caller passes, not to this repository.
+- 2 commands are built at run time and not followed.
+- 1 file belongs to no part: examples/ci/release-binaries.yml.
+- Statistics confidence is low: fewer than 30 qualifying commits in the window, and fewer than 25 source files reach 10 revisions.
 
 Regenerate with `npx --yes @dogfood-lab/atlas map`.

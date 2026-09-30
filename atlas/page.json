@@ -35,16 +35,90 @@
     }
   ],
   "changes": {
-    "first": true
+    "fileCounts": {
+      "added": 1,
+      "changed": 1,
+      "moved": 0,
+      "parts": 2,
+      "removed": 0
+    },
+    "items": [
+      {
+        "kind": "door",
+        "sentence": "CI's pull request trigger now also names `codecov.yml`.",
+        "subjects": [
+          ".github/workflows/ci.yml"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "CI's push trigger now also names `codecov.yml`.",
+        "subjects": [
+          ".github/workflows/ci.yml"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "backpropagate (examples/backpropagate/package.json) is a new command. It runs examples/backpropagate/bin/backpropagate.js.",
+        "subjects": [
+          "examples/backpropagate/package.json",
+          "examples/backpropagate/bin/backpropagate.js"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "And 3 more changes to doors.",
+        "subjects": []
+      },
+      {
+        "kind": "landing",
+        "sentence": "examples/backpropagate/LICENSE is now read by .github/workflows/publish-wrapper.yml.",
+        "subjects": [
+          "examples/backpropagate/LICENSE",
+          ".github/workflows/publish-wrapper.yml"
+        ]
+      },
+      {
+        "kind": "landing",
+        "sentence": "examples/backpropagate/README.md is now read by .github/workflows/publish-wrapper.yml.",
+        "subjects": [
+          "examples/backpropagate/README.md",
+          ".github/workflows/publish-wrapper.yml"
+        ]
+      },
+      {
+        "kind": "landing",
+        "sentence": "examples/backpropagate/package.json is now read by .github/workflows/publish-wrapper.yml.",
+        "subjects": [
+          "examples/backpropagate/package.json",
+          ".github/workflows/publish-wrapper.yml"
+        ]
+      },
+      {
+        "kind": "landing",
+        "sentence": "And 9 more new writers and readers of places.",
+        "subjects": []
+      },
+      {
+        "kind": "counts",
+        "sentence": "1 file added and 1 changed content, across 2 parts.",
+        "subjects": []
+      }
+    ],
+    "since": {
+      "commit": "bb50ee9f783b06f651331192af9e353a93192761",
+      "generatedAt": "2026-09-25T02:15:53.850Z"
+    },
+    "unchanged": false
   },
   "changesTogether": [],
   "changesTogetherNote": [
     "Window: 180 days; a pair counts from 3 shared commits, since the window holds fewer than 30 qualifying commits."
   ],
   "changesTogetherWithTests": 0,
-  "commit": "bb50ee9f783b06f651331192af9e353a93192761",
+  "commit": "72693084398b899e847ba6d753e74fbb32fc0984",
   "defaultBranch": "main",
-  "derived": "10 parts, mostly JavaScript (15 files) and TypeScript (2). Work enters through 6 doors; the busiest is CI, which reaches 3 parts. It publishes a package to npm, chosen at run time. People run mcptoolshop-launch. People import @mcptoolshop/npm-launcher.",
+  "derived": "10 parts, mostly JavaScript (15 files), CSS (2), TypeScript (2), Astro (1) and shell (1). Work enters through 10 doors; the busiest is CI, which reaches 3 parts. It publishes @mcptoolshop/npm-launcher, @mcptoolshop/backpropagate (examples/backpropagate), @mcptoolshop/sovereignty (examples/sovereignty), @mcptoolshop/xrpl-camp (examples/xrpl-camp) and @mcptoolshop/xrpl-lab (examples/xrpl-lab) to npm. It deploys a site to GitHub Pages. People run backpropagate, mcptoolshop-launch, sovereignty, xrpl-camp and xrpl-lab. People import @mcptoolshop/npm-launcher.",
   "doors": [
     {
       "checks": [],
@@ -78,11 +152,13 @@
       ],
       "runsCount": 2,
       "runsMore": 0,
-      "sends": [],
+      "sends": [
+        "uploads coverage to Codecov"
+      ],
       "stages": [],
       "triggers": [
-        "on a pull request touching 9 paths",
-        "on a push touching 9 paths",
+        "on a pull request touching 10 paths",
+        "on a push touching 10 paths",
         "or by hand"
       ]
     },
@@ -135,7 +211,7 @@
         {
           "boundary": "site",
           "depth": 0,
-          "files": 3
+          "files": 5
         }
       ],
       "runs": [
@@ -167,7 +243,7 @@
       "runsCount": 0,
       "runsMore": 0,
       "sends": [
-        "publishes a package to npm, chosen at run time"
+        "publishes @mcptoolshop/backpropagate (examples/backpropagate), @mcptoolshop/sovereignty (examples/sovereignty), @mcptoolshop/xrpl-camp (examples/xrpl-camp) and @mcptoolshop/xrpl-lab (examples/xrpl-lab) to npm"
       ],
       "stages": [],
       "triggers": [
@@ -230,6 +306,110 @@
       "sends": [],
       "stages": [],
       "triggers": []
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": "examples/backpropagate/package.json",
+      "id": "examples/backpropagate/package.json#backpropagate",
+      "kind": "command",
+      "landings": [],
+      "name": "backpropagate",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "backpropagate",
+          "depth": 0,
+          "files": 1
+        }
+      ],
+      "runs": [
+        "examples/backpropagate/bin/backpropagate.js"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [],
+      "stages": [],
+      "triggers": []
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": "examples/sovereignty/package.json",
+      "id": "examples/sovereignty/package.json#sovereignty",
+      "kind": "command",
+      "landings": [],
+      "name": "sovereignty",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "sovereignty",
+          "depth": 0,
+          "files": 1
+        }
+      ],
+      "runs": [
+        "examples/sovereignty/bin/sovereignty.js"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [],
+      "stages": [],
+      "triggers": []
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": "examples/xrpl-camp/package.json",
+      "id": "examples/xrpl-camp/package.json#xrpl-camp",
+      "kind": "command",
+      "landings": [],
+      "name": "xrpl-camp",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "xrpl-camp",
+          "depth": 0,
+          "files": 1
+        }
+      ],
+      "runs": [
+        "examples/xrpl-camp/bin/xrpl-camp.js"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [],
+      "stages": [],
+      "triggers": []
+    },
+    {
+      "checks": [],
+      "checksCount": 0,
+      "checksMore": 0,
+      "file": "examples/xrpl-lab/package.json",
+      "id": "examples/xrpl-lab/package.json#xrpl-lab",
+      "kind": "command",
+      "landings": [],
+      "name": "xrpl-lab",
+      "pushes": false,
+      "reach": [
+        {
+          "boundary": "xrpl-lab",
+          "depth": 0,
+          "files": 1
+        }
+      ],
+      "runs": [
+        "examples/xrpl-lab/bin/xrpl-lab.js"
+      ],
+      "runsCount": 1,
+      "runsMore": 0,
+      "sends": [],
+      "stages": [],
+      "triggers": []
     }
   ],
   "duplicates": [],
@@ -247,14 +427,16 @@
       "to": "src"
     }
   ],
+  "engine": "1.24.0",
   "generated": [],
-  "generatedAt": "2026-09-25T02:15:53.850Z",
+  "generatedAt": "2026-09-30T20:11:09.627Z",
   "limits": [
     "3 reads use paths built at run time and are not named here.",
     "4 writes and 5 reads go to a path their caller passes, not to this repository.",
-    "3 writes and 5 reads go to the home directory (.local/) or a path their caller passes, not to this repository.",
-    "3 commands are built at run time and not followed.",
-    "Statistics confidence is low: fewer than 30 qualifying commits in the window, and fewer than 20 source files reach 10 revisions."
+    "3 writes and 5 reads go to the home directory (.local/ and backpropagate/) or a path their caller passes, not to this repository.",
+    "2 commands are built at run time and not followed.",
+    "1 file belongs to no part: examples/ci/release-binaries.yml.",
+    "Statistics confidence is low: fewer than 30 qualifying commits in the window, and fewer than 25 source files reach 10 revisions."
   ],
   "mainDoor": ".github/workflows/ci.yml",
   "partLabels": {
@@ -280,7 +462,8 @@
   "startHere": [
     ".github/workflows/ci.yml",
     "bin/mcptoolshop-launch.js",
-    "src/index.js"
+    "src/index.js",
+    "src/log.js"
   ],
   "summary": null,
   "summaryFrom": null,

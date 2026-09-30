@@ -49,7 +49,7 @@
       "confidence": "low",
       "highWater": null,
       "name": "bin",
-      "qualifyingSourceCommits": 1,
+      "qualifyingSourceCommits": 0,
       "rebaseline": null
     },
     {
@@ -132,7 +132,7 @@
       "confidence": "low",
       "highWater": null,
       "name": "test",
-      "qualifyingSourceCommits": 1,
+      "qualifyingSourceCommits": 0,
       "rebaseline": null
     },
     {
@@ -172,8 +172,8 @@
     "definition": "commits is how many commits in the window touch the file, including merges and commits dropped from coupling. lines is added plus deleted in those commits.",
     "files": [
       {
-        "commits": 4,
-        "lines": 16,
+        "commits": 6,
+        "lines": 230,
         "path": ".github/workflows/ci.yml"
       },
       {
@@ -193,23 +193,33 @@
       },
       {
         "commits": 1,
-        "lines": 2,
-        "path": ".gitignore"
+        "lines": 94,
+        "path": "atlas/README.md"
       },
       {
         "commits": 1,
-        "lines": 14,
-        "path": "CHANGELOG.md"
+        "lines": 42,
+        "path": "atlas/boundaries.yaml"
       },
       {
         "commits": 1,
-        "lines": 2,
-        "path": "README.md"
+        "lines": 326,
+        "path": "atlas/page.json"
       },
       {
         "commits": 1,
-        "lines": 39,
-        "path": "bin/mcptoolshop-launch.js"
+        "lines": 410,
+        "path": "atlas/statistics.json"
+      },
+      {
+        "commits": 1,
+        "lines": 1423,
+        "path": "atlas/structure.json"
+      },
+      {
+        "commits": 2,
+        "lines": 36,
+        "path": "codecov.yml"
       },
       {
         "commits": 1,
@@ -252,8 +262,8 @@
         "path": "examples/sovereignty/bin/sovereignty.js"
       },
       {
-        "commits": 6,
-        "lines": 48,
+        "commits": 5,
+        "lines": 44,
         "path": "examples/sovereignty/package.json"
       },
       {
@@ -272,8 +282,8 @@
         "path": "examples/xrpl-camp/bin/xrpl-camp.js"
       },
       {
-        "commits": 2,
-        "lines": 44,
+        "commits": 1,
+        "lines": 40,
         "path": "examples/xrpl-camp/package.json"
       },
       {
@@ -298,11 +308,6 @@
       },
       {
         "commits": 1,
-        "lines": 3,
-        "path": "package.json"
-      },
-      {
-        "commits": 1,
         "lines": 5,
         "path": "site/astro.config.mjs"
       },
@@ -318,41 +323,6 @@
       },
       {
         "commits": 1,
-        "lines": 83,
-        "path": "site/src/content/docs/handbook/beginners.md"
-      },
-      {
-        "commits": 1,
-        "lines": 13,
-        "path": "site/src/content/docs/handbook/configuration.md"
-      },
-      {
-        "commits": 1,
-        "lines": 13,
-        "path": "site/src/content/docs/handbook/getting-started.md"
-      },
-      {
-        "commits": 1,
-        "lines": 3,
-        "path": "site/src/content/docs/handbook/index.md"
-      },
-      {
-        "commits": 1,
-        "lines": 2,
-        "path": "site/src/content/docs/handbook/security.md"
-      },
-      {
-        "commits": 1,
-        "lines": 6,
-        "path": "site/src/content/docs/handbook/wrapper-guide.md"
-      },
-      {
-        "commits": 1,
-        "lines": 37,
-        "path": "test/launcher.test.js"
-      },
-      {
-        "commits": 1,
         "lines": 247,
         "path": "test/wsl-dogfood.sh"
       }
@@ -360,15 +330,15 @@
   },
   "confidence": {
     "level": "low",
-    "reason": "fewer than 30 qualifying commits in the window, and fewer than 20 source files reach 10 revisions"
+    "reason": "fewer than 30 qualifying commits in the window, and fewer than 25 source files reach 10 revisions"
   },
-  "generatedAt": "2026-09-25T02:15:53.850Z",
+  "generatedAt": "2026-09-30T20:11:09.627Z",
   "generatedFrom": {
-    "commit": "bb50ee9f783b06f651331192af9e353a93192761"
+    "commit": "72693084398b899e847ba6d753e74fbb32fc0984"
   },
   "pairs": [],
   "parameters": {
-    "appliedChangesetLimit": 15.75,
+    "appliedChangesetLimit": 17.25,
     "changeset": 50,
     "changesetFraction": 0.25,
     "cohesionDrop": 0.2,
@@ -377,16 +347,16 @@
     "floor": "fallen",
     "floorHeld": false,
     "floorTrigger": "both",
-    "headDate": "2026-09-17T18:59:35-07:00",
-    "inScopeFiles": 63,
+    "headDate": "2026-09-29T16:47:03-07:00",
+    "inScopeFiles": 69,
     "pinnedStart": null,
-    "priorFloor": null,
+    "priorFloor": "fallen",
     "qualifyingCommits": 17,
     "qualifyingMinimum": 30,
     "revisions": 5,
     "shared": 10,
     "sharedFloorUsed": 3,
-    "since": "2026-03-22T01:59:35.000Z",
+    "since": "2026-04-02T23:47:03.000Z",
     "sourceExtensions": [
       ".js",
       ".mjs",
