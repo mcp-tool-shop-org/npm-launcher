@@ -57,7 +57,7 @@ Downloaded binaries are stored per-tool, per-version:
 | OS      | Path                                           |
 |---------|-------------------------------------------------|
 | Linux   | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/` (defaults to `~/.cache/mcptoolshop/`) |
-| macOS   | `~/.cache/mcptoolshop/<tool>/<version>/`        |
+| macOS   | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/` (defaults to `~/.cache/mcptoolshop/`) |
 | Windows | `%LOCALAPPDATA%\mcptoolshop\<tool>\<version>\`  |
 
 On Linux, npm-launcher respects the `XDG_CACHE_HOME` environment variable. If unset, it defaults to `~/.cache`.

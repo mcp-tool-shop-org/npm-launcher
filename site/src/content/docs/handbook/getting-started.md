@@ -62,7 +62,7 @@ npm-launcher answers these flags itself:
 | `--print-cache-path` | Show where binaries are cached for the configured tool |
 | `--clear-cache` | Remove cached binaries for the configured tool |
 
-Through a wrapper, every other argument goes to the tool, `--version` and `--help` included (since 1.2.0), so `npx @mcptoolshop/<tool> --version` prints the tool's version. The cache management flags require a configured wrapper.
+Through a wrapper, every other argument goes to the tool, `--version` and `--help` included (since 1.2.0), so `npx @mcptoolshop/<tool> --version` prints the tool's version. The tool sees its own name as `argv[0]`, so its help reads `Usage: <tool> ...` rather than the cached file name. The cache management flags require a configured wrapper.
 
 ## Quick example
 

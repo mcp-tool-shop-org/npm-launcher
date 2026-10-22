@@ -15,7 +15,7 @@
 
 ### Default safety posture
 
-- [ ] `[cli|mcp|desktop]` SKIP: Not a CLI itself — library consumed by wrapper packages
+- [ ] `[cli|mcp|desktop]` SKIP: No dangerous actions to gate — the launcher only downloads, verifies and runs the configured tool; `--clear-cache` removes only that tool's cache (re-checked 2026-10-22, 1.2.0)
 - [ ] `[cli|mcp|desktop]` SKIP: File ops constrained to cache dir only, not user-configurable
 - [ ] `[mcp]` SKIP: Not an MCP server
 - [ ] `[mcp]` SKIP: Not an MCP server
@@ -23,7 +23,7 @@
 ## B. Error Handling
 
 - [x] `[all]` Errors follow the Structured Error Shape: `code`, `message`, `hint`, `cause?`, `retryable?` (2026-03-02)
-- [ ] `[cli]` SKIP: Library — exit codes are passthrough from the wrapped binary
+- [x] `[cli]` Exit codes: 0 ok, 1 launch failure, 2 bad or missing config; otherwise the tool's own exit code passes through (2026-10-22, 1.2.0)
 - [ ] `[cli]` SKIP: Library — no --debug flag; errors always include actionable context
 - [ ] `[mcp]` SKIP: Not an MCP server
 - [ ] `[mcp]` SKIP: Not an MCP server
@@ -35,7 +35,7 @@
 - [x] `[all]` README is current: what it does, install, usage, supported platforms + runtime versions (2026-03-02)
 - [x] `[all]` CHANGELOG.md (Keep a Changelog format) (2026-03-02)
 - [x] `[all]` LICENSE file present and repo states support status (2026-03-02)
-- [ ] `[cli]` SKIP: Library — no --help; wrappers expose the binary's --help
+- [x] `[cli]` `--help` accurate: run on its own the launcher prints its usage and flags; through a wrapper `--help` reaches the tool (2026-10-22, 1.2.0)
 - [ ] `[cli|mcp|desktop]` SKIP: Two logging levels (normal/quiet via env var) appropriate for download+cache scope
 - [ ] `[mcp]` SKIP: Not an MCP server
 - [ ] `[complex]` SKIP: Single-purpose download+cache+run — not complex

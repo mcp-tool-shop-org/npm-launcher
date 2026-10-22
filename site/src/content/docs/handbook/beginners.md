@@ -34,7 +34,7 @@ If you are an **end user** of a tool that uses npm-launcher, you do not need to 
 
 ## First steps
 
-1. **Install Node.js 20 or later.** npm-launcher requires Node.js 20+ (LTS recommended). Check with `node --version`.
+1. **Install Node.js 18 or later.** npm-launcher requires Node.js 18+ and is tested on 20 and 22 (a current LTS is recommended). Check with `node --version`.
 
 2. **Create a wrapper package.** Start with a new directory containing `package.json` and a `bin/` script. The [Wrapper Guide](/npm-launcher/handbook/wrapper-guide/) walks through every file.
 
