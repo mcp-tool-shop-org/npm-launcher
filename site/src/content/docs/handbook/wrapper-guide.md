@@ -27,7 +27,7 @@ my-tool/
     "my-tool": "bin/my-tool.js"
   },
   "dependencies": {
-    "@mcptoolshop/npm-launcher": "^1.0.0"
+    "@mcptoolshop/npm-launcher": "^1.2.0"
   }
 }
 ```
@@ -87,6 +87,8 @@ Users can now run your tool with:
 ```bash
 npx @mcptoolshop/my-tool --help
 ```
+
+`--help` and `--version` reach your tool and print its own help and version (launcher 1.2.0 or later; `^1.2.0` above ensures it). Your tool sees its own name as `argv[0]`, so a click or argparse usage line reads `Usage: my-tool ...`.
 
 ## Updating versions
 

@@ -1,49 +1,28 @@
 # Scorecard
 
-> Score a repo before remediation. Fill this out first, then use SHIP_GATE.md to fix.
+> Scored from `npx @mcptoolshop/shipcheck audit` and the full-treatment pass for 1.2.0.
 
-**Repo:** <!-- repo name -->
-**Date:** <!-- YYYY-MM-DD -->
-**Type tags:** <!-- [npm] [mcp] [cli] etc. -->
+**Repo:** npm-launcher
+**Date:** 2026-10-22
+**Type tags:** `[all]` `[npm]` `[cli]`
 
-## Pre-Remediation Assessment
+## Audit result
 
-| Category | Score | Notes |
-|----------|-------|-------|
-| A. Security | /10 | |
-| B. Error Handling | /10 | |
-| C. Operator Docs | /10 | |
-| D. Shipping Hygiene | /10 | |
-| E. Identity (soft) | /10 | |
-| **Overall** | **/50** | |
+`shipcheck audit` on 465f406: 17 checked, 18 skipped with reasons, 0 unchecked, all hard gates (A–D) pass.
 
-## Key Gaps
-
-<!-- List the 3-5 most critical gaps that need fixing. Be specific. -->
-
-1.
-2.
-3.
-
-## Remediation Priority
-
-<!-- What to fix first, second, third. Informed by the gaps above. -->
-
-| Priority | Item | Estimated effort |
-|----------|------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-
-## Post-Remediation
-
-<!-- Fill this out after applying SHIP_GATE.md -->
-
-| Category | Before | After |
+| Category | Result | Notes |
 |----------|--------|-------|
-| A. Security | /10 | /10 |
-| B. Error Handling | /10 | /10 |
-| C. Operator Docs | /10 | /10 |
-| D. Shipping Hygiene | /10 | /10 |
-| E. Identity (soft) | /10 | /10 |
-| **Overall** | /50 | /50 |
+| A. Security | pass | SECURITY.md, a threat model in the README, no secrets, no telemetry, SHA256 check on every binary |
+| B. Error Handling | pass | Structured errors with hints; exit codes 0, 1 and 2, and the tool's own code passes through |
+| C. Operator Docs | pass | README, CHANGELOG, LICENSE and handbook brought up to 1.2.0; `--help` accurate |
+| D. Shipping Hygiene | pass | `verify` script, version matches tag, zero runtime dependencies, `npm pack` contents checked |
+| E. Identity (soft) | pass | Logo, translations (7 languages), landing page with handbook, GitHub metadata, coverage badge |
+
+## Coverage
+
+59.08% lines on CI (c8). CI floor 59, ratcheting. Codecov project and patch targets are 90%; project stays red until the repo reaches 90.
+
+## Open gaps
+
+1. Line coverage is 59% against the 90% bar. The weakest files are `src/github.js` (23%, the HTTPS fetch and redirect code) and `src/index.js` (46%, the download-and-cache path inside `launch()`); the integration test drives them through a local HTTP server, not through `launch()` itself.
+2. Pass-through to a real PyInstaller binary was checked by hand on Windows and Linux (WSL), not macOS; CI checks it with node standing in for the tool.

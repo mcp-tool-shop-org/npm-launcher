@@ -32,9 +32,10 @@ export const config: SiteConfig = {
       features: [
         { title: 'SHA256 verified', desc: 'Every binary is checked against checksums from the same GitHub Release. Mismatches abort and clean up.' },
         { title: 'Atomic downloads', desc: 'Writes to .tmp, verifies, then renames. Interrupted downloads never poison the cache.' },
-        { title: 'Zero dependencies', desc: 'Pure Node.js stdlib. No node-fetch, no got, nothing to audit. Ships at 8 kB.' },
+        { title: 'Zero dependencies', desc: 'Pure Node.js stdlib. No node-fetch, no got, nothing to audit. Ships at about 20 kB.' },
         { title: 'Cache-first', desc: 'Downloads once per version, then runs from local cache. Second launch is instant.' },
         { title: 'Quiet mode', desc: 'Set MCPTOOLSHOP_LAUNCHER_QUIET=1 for script-friendly silent operation. Errors always print.' },
+        { title: 'Transparent to the tool', desc: 'Every argument reaches the tool, --version and --help included, and the tool sees its own name as argv[0].' },
         { title: 'Concurrent-safe', desc: 'File locking prevents race conditions when multiple npx invocations download the same binary.' },
       ],
     },

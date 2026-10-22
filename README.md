@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/actions"><img src="https://github.com/mcp-tool-shop-org/npm-launcher/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@mcptoolshop/npm-launcher"><img src="https://img.shields.io/npm/v/@mcptoolshop/npm-launcher" alt="npm version"></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/npm-launcher"><img src="https://codecov.io/gh/mcp-tool-shop-org/npm-launcher/branch/main/graph/badge.svg" alt="Coverage"></a>
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
@@ -59,6 +60,8 @@ npm install @mcptoolshop/npm-launcher
 
 This package is a library for wrapper packages — end users install the wrapper (e.g. `npx @mcptoolshop/sovereignty`), not this directly.
 
+Requires Node.js 18 or later. CI tests Node 20 and 22.
+
 ## Config Contract
 
 Wrappers pass pure JSON via `MCPTOOLSHOP_LAUNCH_CONFIG`. No functions, no magic.
@@ -99,7 +102,7 @@ A wrapper is a tiny npm package (~3 files):
   "name": "@mcptoolshop/sovereignty",
   "version": "1.4.0",
   "bin": { "sovereignty": "bin/sovereignty.js" },
-  "dependencies": { "@mcptoolshop/npm-launcher": "^1.0.0" }
+  "dependencies": { "@mcptoolshop/npm-launcher": "^1.2.0" }
 }
 ```
 
@@ -123,6 +126,20 @@ See `examples/sovereignty/` and `examples/xrpl-camp/` for complete wrapper templ
 |----------|--------|
 | `MCPTOOLSHOP_LAUNCHER_QUIET=1` | Suppress progress messages (errors still print) |
 
+## Launcher Flags
+
+Through a wrapper, every argument goes to the tool, `--version` and `--help` included, so `npx @mcptoolshop/<tool> --version` prints the tool's version (since 1.2.0). The tool also sees its own name as `argv[0]`, so its help reads `Usage: <tool> ...` rather than the cached file name.
+
+The launcher keeps three flags for itself:
+
+| Flag | Effect |
+|------|--------|
+| `--launcher-version` | Print the launcher's version, with or without a wrapper |
+| `--print-cache-path` | Print where the configured tool's binary is cached |
+| `--clear-cache` | Remove the configured tool's cached binaries |
+
+Run on its own, without a wrapper's config, the launcher also answers `--version`/`-V` and `--help`/`-h`.
+
 ## Supported Platforms
 
 - Linux x64
@@ -134,8 +151,8 @@ See `examples/sovereignty/` and `examples/xrpl-camp/` for complete wrapper templ
 
 | OS      | Path                                         |
 |---------|----------------------------------------------|
-| Linux   | `~/.cache/mcptoolshop/<tool>/<version>/`     |
-| macOS   | `~/.cache/mcptoolshop/<tool>/<version>/`     |
+| Linux   | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/` (default `~/.cache/mcptoolshop/`) |
+| macOS   | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/` (default `~/.cache/mcptoolshop/`) |
 | Windows | `%LOCALAPPDATA%\mcptoolshop\<tool>\<version>\` |
 
 ---
