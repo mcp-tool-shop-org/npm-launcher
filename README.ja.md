@@ -9,13 +9,14 @@
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/actions"><img src="https://github.com/mcp-tool-shop-org/npm-launcher/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@mcptoolshop/npm-launcher"><img src="https://img.shields.io/npm/v/@mcptoolshop/npm-launcher" alt="npm version"></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/npm-launcher"><img src="https://codecov.io/gh/mcp-tool-shop-org/npm-launcher/branch/main/graph/badge.svg" alt="Coverage"></a>
   <a href="https://github.com/mcp-tool-shop-org/npm-launcher/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-npm用の汎用的なGitHubリリースバイナリランチャー。プラットフォーム固有のバイナリをGitHubリリースからダウンロードし、ローカルにキャッシュし、SHA256チェックサムを検証し、すべての引数をそのまま渡して実行します。
+npm用の汎用的なGitHubリリースバイナリランチャー。プラットフォーム固有のバイナリをGitHubリリースのリポジトリからダウンロードし、ローカルにキャッシュし、SHA256チェックサムを検証し、すべての引数をそのまま渡して実行します。
 
-Python CLI（またはコンパイルされたバイナリ）が、依存関係なしで`npx`配布できるように構築されています。
+Python CLI（またはコンパイルされたバイナリ）が、依存関係ゼロの`npx`ディストリビューションになるように構築されています。
 
 ## セキュリティと脅威モデル
 
@@ -23,8 +24,8 @@ npm-launcherはバイナリをダウンロードして実行します。以下�
 
 - **ネットワーク:** HTTPSのみ。`github.com`とGitHubのCDNに接続します。それ以外の宛先はありません。
 - **ファイルシステム:** ローカルキャッシュ（`~/.cache/mcptoolshop/`または`%LOCALAPPDATA%\mcptoolshop\`）にのみ書き込みます。システムファイルを変更したり、キャッシュ外のファイルを読み取ったりすることはありません。
-- **検証:** すべてのバイナリは、同じリリースの`checksums-<version>.txt`ファイルにあるSHA256と比較してチェックされます。不一致の場合、実行は中止され、ダウンロードされたファイルは削除されます。
-- **テレメトリは行いません。** 機密情報の処理も行いません。資格情報は保存または送信されません。
+- **検証:** すべてのバイナリは、同じリリースの`checksums-<version>.txt`ファイルにあるSHA256に対してチェックされます。不一致の場合、実行が中止され、ダウンロードされたファイルが削除されます。
+- **テレメトリは行いません。** 機密情報の処理も行いません。保存または送信される認証情報は一切ありません。
 - **権限:** 通常のユーザーのファイルシステムアクセスとアウトバウンドHTTPS以上の権限は必要ありません。
 
 ## 仕組み
@@ -59,6 +60,8 @@ npm install @mcptoolshop/npm-launcher
 
 このパッケージは、ラッパーパッケージ用のライブラリです。エンドユーザーは、このパッケージを直接インストールするのではなく、ラッパー（例：`npx @mcptoolshop/sovereignty`）をインストールします。
 
+Node.js 18以降が必要です。CIテストではNode 20と22を使用します。
+
 ## 設定契約
 
 ラッパーは、純粋なJSONを`MCPTOOLSHOP_LAUNCH_CONFIG`経由で渡します。関数や特殊な処理はありません。
@@ -91,7 +94,7 @@ npm install @mcptoolshop/npm-launcher
 
 ## ラッパーの作成
 
-ラッパーは、小さなnpmパッケージ（約3ファイル）です。
+ラッパーは、小さなnpmパッケージ（約3つのファイル）です。
 
 **package.json:**
 ```json
@@ -99,7 +102,7 @@ npm install @mcptoolshop/npm-launcher
   "name": "@mcptoolshop/sovereignty",
   "version": "1.4.0",
   "bin": { "sovereignty": "bin/sovereignty.js" },
-  "dependencies": { "@mcptoolshop/npm-launcher": "^1.0.0" }
+  "dependencies": { "@mcptoolshop/npm-launcher": "^1.2.0" }
 }
 ```
 
@@ -123,21 +126,35 @@ require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 |----------|--------|
 | `MCPTOOLSHOP_LAUNCHER_QUIET=1` | 進行状況メッセージを抑制（エラーは引き続き表示されます） |
 
+## ランチャーフラグ
+
+ラッパーを通じて、すべての引数がツールに渡されます（`--version`と`--help`も含まれます）。そのため、`npx @mcptoolshop/<tool> --version`はツールのバージョンを表示します（バージョン1.2.0以降）。ツールは、自身の名前を`argv[0]`としても認識するため、ヘルプメッセージは`Usage: <tool> ...`と表示され、キャッシュされたファイル名は表示されません。
+
+ランチャーは、自身のために3つのフラグを保持します。
+
+| フラグ | 効果 |
+|------|--------|
+| `--launcher-version` | ランチャーのバージョンを、ラッパーの有無にかかわらず表示します。 |
+| `--print-cache-path` | 設定されたツールのバイナリがキャッシュされている場所を表示します。 |
+| `--clear-cache` | 設定されたツールのキャッシュされたバイナリを削除します。 |
+
+ラッパーの設定なしで単独で実行すると、ランチャーは`--version`/`-V`と`--help`/`-h`に応答します。
+
 ## サポートされているプラットフォーム
 
 - Linux x64
-- macOS ARM64 (Apple Silicon)
-- macOS x64 (Intel)
+- macOS ARM64（Apple Silicon）
+- macOS x64（Intel）
 - Windows x64
 
 ## キャッシュの場所
 
 | OS      | パス |
 |---------|----------------------------------------------|
-| Linux | `~/.cache/mcptoolshop/<tool>/<version>/`     |
-| macOS | `~/.cache/mcptoolshop/<tool>/<version>/`     |
+| Linux | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/`（デフォルトは`~/.cache/mcptoolshop/`） |
+| macOS | `$XDG_CACHE_HOME/mcptoolshop/<tool>/<version>/`（デフォルトは`~/.cache/mcptoolshop/`） |
 | Windows | `%LOCALAPPDATA%\mcptoolshop\<tool>\<version>\` |
 
 ---
 
-MCP Tool Shopによって構築されました <a href="https://mcp-tool-shop.github.io/"></a>
+MCP Tool Shopによって構築されました。 <a href="https://mcp-tool-shop.github.io/"></a>
