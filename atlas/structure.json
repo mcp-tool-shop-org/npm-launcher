@@ -9,7 +9,7 @@
       "externals": 0,
       "files": [
         {
-          "hash": "53d2cf8c64798171bfde40a2efa6bed8061a3d7afad6626293b2178999127898",
+          "hash": "74942a283999b2dcbe6beec4b5b5ae0039b61cf9c9803c4a9a6eabe99c6bcd1f",
           "path": ".github/workflows/ci.yml"
         },
         {
@@ -110,10 +110,10 @@
           "failurePaths": [
             {
               "kind": "catch",
-              "line": 58
+              "line": 72
             }
           ],
-          "hash": "8367157d4790f114511eee57cac641179d7b06ab8ccd2efc39ef12a7d1a78a9f",
+          "hash": "b1b8136f7a45797638a95d6ca3719f0e527a24bfdae4cfb4ec397583809cf1b5",
           "importsFiles": [
             "src/index.js"
           ],
@@ -147,7 +147,7 @@
           "path": ".gitignore"
         },
         {
-          "hash": "25ab07e0093349002b66247220e09ee66643627b7ef91b9bf3345be6e10cee95",
+          "hash": "dd4a63e3ec7c38d32b9f028b3b3ded62797eab34d384540cf5578fcd73534a9e",
           "path": "CHANGELOG.md"
         },
         {
@@ -203,7 +203,7 @@
           "path": "codecov.yml"
         },
         {
-          "hash": "446db4c892ef7586b307cdd7f87e4c40862379db8a61cf1e45a10ad36c2bce0d",
+          "hash": "3880cdb9dd381535e313658fc925ea786cef7d53c6dc02714233569531fd9172",
           "path": "package.json"
         }
       ],
@@ -231,7 +231,7 @@
           "path": "site/astro.config.mjs"
         },
         {
-          "hash": "af5d4f54dca60686724d306eb58759fb25b6f5ba4d66559ab84a968112a184e5",
+          "hash": "0607a19c4f60b635244a906c7ad2424359b50e20c4a83bc140f202abce4a941e",
           "path": "site/package-lock.json"
         },
         {
@@ -252,7 +252,7 @@
           "path": "site/src/content/docs/handbook/configuration.md"
         },
         {
-          "hash": "fbd978eef9ff5eeb67f20a4ac7a833bc891caeebebaf060cd4ddc372a4c164f7",
+          "hash": "a33794497cb627078b7749c14475318748581d9b56eb346521035c5acb877c9e",
           "path": "site/src/content/docs/handbook/getting-started.md"
         },
         {
@@ -860,7 +860,7 @@
       "externals": 0,
       "files": [
         {
-          "hash": "5bd157bb575afff59528a0e0c0951c29c4fa6d3eb7a5aea3ee38d0ae355900ae",
+          "hash": "1775372d1ed4e4205b124d54512cdea17831ef21277aa0f6250134b87b351ccc",
           "importOrder": [
             "src/verify.js",
             "src/platform.js",
@@ -1987,7 +1987,7 @@
   ],
   "engine": "1.24.0",
   "generatedFrom": {
-    "commit": "72693084398b899e847ba6d753e74fbb32fc0984",
+    "commit": "51a04b3cd6f2a12615b5cc7c7928e930f7337c40",
     "tracked": 64
   },
   "landings": [

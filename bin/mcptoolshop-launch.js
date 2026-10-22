@@ -3,16 +3,28 @@
 
 const { launch, printCachePath, clearCache } = require("../src/index");
 
-// --version and --help work without config (intercepted early)
 const earlyArg = process.argv[2];
+// A wrapper sets this before requiring us. When it is set, the launcher is
+// standing in for a tool, so the tool's flags belong to the tool (#6).
+const viaWrapper = Boolean(process.env.MCPTOOLSHOP_LAUNCH_CONFIG);
 
-if (earlyArg === "--version" || earlyArg === "-V") {
+// The launcher's own version, with or without a wrapper.
+if (earlyArg === "--launcher-version") {
   const pkg = require("../package.json");
   console.log(`mcptoolshop-launch ${pkg.version}`);
   process.exit(0);
 }
 
-if (earlyArg === "--help" || earlyArg === "-h") {
+// Run on its own, the launcher answers --version and --help itself. Through a
+// wrapper they go to the tool: 1.1.1 answered them here, so `npx <tool>
+// --version` printed the launcher's version instead of the tool's.
+if (!viaWrapper && (earlyArg === "--version" || earlyArg === "-V")) {
+  const pkg = require("../package.json");
+  console.log(`mcptoolshop-launch ${pkg.version}`);
+  process.exit(0);
+}
+
+if (!viaWrapper && (earlyArg === "--help" || earlyArg === "-h")) {
   const pkg = require("../package.json");
   console.log(`mcptoolshop-launch v${pkg.version}
 
@@ -23,10 +35,12 @@ USAGE (direct):
 
 USAGE (via wrapper):
   Set MCPTOOLSHOP_LAUNCH_CONFIG as JSON, then run mcptoolshop-launch [-- args...]
+  Every argument goes to the tool, --version and --help included.
 
 OPTIONS:
-  --version, -V          Print version and exit
-  --help, -h             Show this help and exit
+  --version, -V          Print the launcher's version and exit (run on its own)
+  --help, -h             Show this help and exit (run on its own)
+  --launcher-version     Print the launcher's version, also via a wrapper
   --print-cache-path     Show cache directory for configured tool
   --clear-cache          Remove cached binaries for configured tool
 

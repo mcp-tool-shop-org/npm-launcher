@@ -52,16 +52,17 @@ npx @mcptoolshop/sovereignty tutorial
 
 ## CLI flags
 
-npm-launcher provides built-in flags that work on any wrapper:
+npm-launcher answers these flags itself:
 
 | Flag | Description |
 |------|-------------|
-| `--version`, `-V` | Print the launcher version and exit (works without config) |
-| `--help`, `-h` | Show full CLI usage documentation (works without config) |
+| `--launcher-version` | Print the launcher version and exit, with or without a wrapper |
+| `--version`, `-V` | Print the launcher version and exit, only when run on its own (no config) |
+| `--help`, `-h` | Show the launcher's usage, only when run on its own (no config) |
 | `--print-cache-path` | Show where binaries are cached for the configured tool |
 | `--clear-cache` | Remove cached binaries for the configured tool |
 
-The `--version` and `--help` flags work even without `MCPTOOLSHOP_LAUNCH_CONFIG` set. The cache management flags require a configured wrapper.
+Through a wrapper, every other argument goes to the tool, `--version` and `--help` included (since 1.2.0), so `npx @mcptoolshop/<tool> --version` prints the tool's version. The cache management flags require a configured wrapper.
 
 ## Quick example
 

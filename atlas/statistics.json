@@ -33,7 +33,7 @@
       "confidence": "low",
       "highWater": null,
       "name": "backpropagate",
-      "qualifyingSourceCommits": 1,
+      "qualifyingSourceCommits": 0,
       "rebaseline": null
     },
     {
@@ -49,7 +49,7 @@
       "confidence": "low",
       "highWater": null,
       "name": "bin",
-      "qualifyingSourceCommits": 0,
+      "qualifyingSourceCommits": 1,
       "rebaseline": null
     },
     {
@@ -132,7 +132,7 @@
       "confidence": "low",
       "highWater": null,
       "name": "test",
-      "qualifyingSourceCommits": 0,
+      "qualifyingSourceCommits": 1,
       "rebaseline": null
     },
     {
@@ -172,8 +172,8 @@
     "definition": "commits is how many commits in the window touch the file, including merges and commits dropped from coupling. lines is added plus deleted in those commits.",
     "files": [
       {
-        "commits": 6,
-        "lines": 230,
+        "commits": 9,
+        "lines": 240,
         "path": ".github/workflows/ci.yml"
       },
       {
@@ -193,7 +193,12 @@
       },
       {
         "commits": 1,
-        "lines": 94,
+        "lines": 18,
+        "path": "CHANGELOG.md"
+      },
+      {
+        "commits": 3,
+        "lines": 178,
         "path": "atlas/README.md"
       },
       {
@@ -202,49 +207,29 @@
         "path": "atlas/boundaries.yaml"
       },
       {
-        "commits": 1,
-        "lines": 326,
+        "commits": 3,
+        "lines": 744,
         "path": "atlas/page.json"
       },
       {
-        "commits": 1,
-        "lines": 410,
+        "commits": 3,
+        "lines": 606,
         "path": "atlas/statistics.json"
       },
       {
-        "commits": 1,
-        "lines": 1423,
+        "commits": 3,
+        "lines": 3155,
         "path": "atlas/structure.json"
+      },
+      {
+        "commits": 1,
+        "lines": 24,
+        "path": "bin/mcptoolshop-launch.js"
       },
       {
         "commits": 2,
         "lines": 36,
         "path": "codecov.yml"
-      },
-      {
-        "commits": 1,
-        "lines": 21,
-        "path": "examples/backpropagate/LICENSE"
-      },
-      {
-        "commits": 1,
-        "lines": 109,
-        "path": "examples/backpropagate/README.md"
-      },
-      {
-        "commits": 1,
-        "lines": 204,
-        "path": "examples/backpropagate/bin/backpropagate.js"
-      },
-      {
-        "commits": 1,
-        "lines": 34,
-        "path": "examples/backpropagate/package-lock.json"
-      },
-      {
-        "commits": 1,
-        "lines": 32,
-        "path": "examples/backpropagate/package.json"
       },
       {
         "commits": 1,
@@ -308,12 +293,17 @@
       },
       {
         "commits": 1,
+        "lines": 2,
+        "path": "package.json"
+      },
+      {
+        "commits": 1,
         "lines": 5,
         "path": "site/astro.config.mjs"
       },
       {
-        "commits": 1,
-        "lines": 6049,
+        "commits": 3,
+        "lines": 6061,
         "path": "site/package-lock.json"
       },
       {
@@ -323,8 +313,13 @@
       },
       {
         "commits": 1,
-        "lines": 247,
-        "path": "test/wsl-dogfood.sh"
+        "lines": 9,
+        "path": "site/src/content/docs/handbook/getting-started.md"
+      },
+      {
+        "commits": 1,
+        "lines": 73,
+        "path": "test/launcher.test.js"
       }
     ]
   },
@@ -332,9 +327,9 @@
     "level": "low",
     "reason": "fewer than 30 qualifying commits in the window, and fewer than 25 source files reach 10 revisions"
   },
-  "generatedAt": "2026-09-30T20:11:09.627Z",
+  "generatedAt": "2026-10-22T09:10:13.997Z",
   "generatedFrom": {
-    "commit": "72693084398b899e847ba6d753e74fbb32fc0984"
+    "commit": "51a04b3cd6f2a12615b5cc7c7928e930f7337c40"
   },
   "pairs": [],
   "parameters": {
@@ -347,16 +342,16 @@
     "floor": "fallen",
     "floorHeld": false,
     "floorTrigger": "both",
-    "headDate": "2026-09-29T16:47:03-07:00",
+    "headDate": "2026-10-22T05:10:04-04:00",
     "inScopeFiles": 69,
     "pinnedStart": null,
     "priorFloor": "fallen",
-    "qualifyingCommits": 17,
+    "qualifyingCommits": 19,
     "qualifyingMinimum": 30,
     "revisions": 5,
     "shared": 10,
     "sharedFloorUsed": 3,
-    "since": "2026-04-02T23:47:03.000Z",
+    "since": "2026-04-25T09:10:04.000Z",
     "sourceExtensions": [
       ".js",
       ".mjs",
