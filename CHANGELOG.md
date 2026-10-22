@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-10-22
+
+### Changed
+
+- **Through a wrapper, `--version`, `-V`, `--help` and `-h` reach the tool**
+  (#6). 1.1.1 answered them before reading the wrapper's config, so
+  `npx @mcptoolshop/<tool> --version` printed `mcptoolshop-launch 1.1.1`
+  instead of the tool's version. Run on its own (no
+  `MCPTOOLSHOP_LAUNCH_CONFIG`), the launcher still answers them itself.
+  Wrappers with a `^1` range pick this up on their next install.
+
+### Added
+
+- `--launcher-version` prints the launcher's version, with or without a
+  wrapper.
+- Six pass-through tests (23 total), and a CI line-coverage floor at the
+  measured level (target 90).
+
 ## [1.1.1] - 2026-03-25
 
 ### Added
