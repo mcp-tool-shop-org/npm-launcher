@@ -13,19 +13,19 @@
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-Lanceur binaire générique pour npm, compatible avec GitHub. Il télécharge les binaires spécifiques à la plateforme depuis les versions de GitHub, les met en cache localement, vérifie les sommes de contrôle SHA256 et les exécute avec la transmission complète des arguments.
+Lanceur binaire générique GitHub pour npm. Télécharge les binaires spécifiques à la plateforme à partir de GitHub Releases, les met en cache localement, vérifie les sommes de contrôle SHA256 et les exécute en transmettant tous les arguments.
 
-Conçu pour que les interfaces en ligne de commande Python (ou tout binaire compilé) disposent d'une distribution `npx` sans dépendances.
+Conçu pour que les interfaces en ligne de commande Python (ou tout autre binaire compilé) bénéficient d’une distribution sans dépendances `npx`.
 
 ## Sécurité et modèle de menace
 
-`npm-launcher` télécharge et exécute des binaires. Voici ce qu'il touche et ce qu'il ne touche pas :
+npm-launcher télécharge et exécute des binaires. Voici ce qu’il touche et ce qu’il ne touche pas :
 
-- **Réseau :** Uniquement HTTPS, vers `github.com` et le CDN de GitHub. Aucune autre destination.
-- **Système de fichiers :** Écrit uniquement dans le cache local (`~/.cache/mcptoolshop/` ou `%LOCALAPPDATA%\mcptoolshop\`). Ne modifie pas les fichiers système et ne lit rien en dehors du cache.
-- **Vérification :** Chaque binaire est vérifié par rapport à une somme de contrôle SHA256 provenant d'un fichier `checksums-<version>.txt` dans la même version. Toute incohérence interrompt l'exécution et supprime le fichier téléchargé.
-- **Pas de télémétrie.** Aucune gestion de secrets. Aucune information d'identification stockée ou transmise.
-- **Permissions :** Aucune permission requise, au-delà de l'accès normal aux fichiers système de l'utilisateur et de la connexion HTTPS sortante.
+- **Réseau :** uniquement HTTPS, vers `github.com` et le CDN de GitHub. Aucune autre destination.
+- **Système de fichiers :** écrit uniquement dans le cache local (`~/.cache/mcptoolshop/` ou `%LOCALAPPDATA%\mcptoolshop\`). Ne modifie pas les fichiers système et ne lit pas en dehors du cache.
+- **Vérification :** chaque binaire est vérifié par rapport à SHA256 à partir d’un fichier `checksums-<version>.txt` dans la même version. Les incohérences interrompent l’exécution et suppriment le fichier téléchargé.
+- **Pas de télémétrie.** Pas de gestion des secrets. Aucune information d’identification stockée ou transmise.
+- **Autorisations :** aucune autorisation supplémentaire n’est requise au-delà de l’accès normal au système de fichiers de l’utilisateur et de la connexion HTTPS sortante.
 
 ## Fonctionnement
 
@@ -57,43 +57,43 @@ npx @mcptoolshop/sovereignty tutorial
 npm install @mcptoolshop/npm-launcher
 ```
 
-Ce paquet est une bibliothèque pour les paquets d'enveloppe. Les utilisateurs finaux installent l'enveloppe (par exemple, `npx @mcptoolshop/sovereignty`), et non ce paquet directement.
+Ce paquet est une bibliothèque pour les paquets d’enveloppement : les utilisateurs finaux installent le paquet d’enveloppement (par exemple, `npx @mcptoolshop/sovereignty`), et non celui-ci directement.
 
 ## Contrat de configuration
 
-Les enveloppes transmettent uniquement du JSON via `MCPTOOLSHOP_LAUNCH_CONFIG`. Pas de fonctions, pas de magie.
+Les paquets d’enveloppement transmettent du JSON pur via `MCPTOOLSHOP_LAUNCH_CONFIG`. Pas de fonctions, pas de magie.
 
 | Champ | Obligatoire | Exemple | Description |
 |------------|----------|------------------------|--------------------------------------|
 | `toolName` | oui | `"sovereignty"`        | Nom de base du binaire |
-| `owner`    | oui | `"mcp-tool-shop-org"`  | Organisation/utilisateur GitHub |
-| `repo`     | oui | `"sovereignty"`        | Nom du dépôt GitHub |
-| `version`  | oui | `"1.4.0"`              | Semver (sans le préfixe `v`) |
-| `tag`      | no       | `"v1.4.0"`             | Balise Git (par défaut : `v<version>`) |
+| `owner`    | oui | `"mcp-tool-shop-org"`  | GitHub org/user |
+| `repo`     | oui | `"sovereignty"`        | GitHub nom du dépôt |
+| `version`  | oui | `"1.4.0"`              | Semver (sans préfixe `v`) |
+| `tag`      | no       | `"v1.4.0"`             | Balise Git (par défaut, `v<version>`) |
 | `quiet`    | no       | `true`                 | Supprimer les messages de progression |
 
-## Convention de nommage des fichiers
+## Convention de nommage des ressources
 
-Fixe. Tous les outils suivent le même schéma :
+Bloqué. Tous les outils suivent le même modèle :
 
 ```
 <toolName>-<version>-<os>-<arch><ext>
 ```
 
-| Plateforme | Fichier exemple |
+| Plateforme | Exemple de ressource |
 |---------------|--------------------------------------|
 | Linux x64 | `sovereignty-1.4.0-linux-x64`        |
 | macOS ARM | `sovereignty-1.4.0-darwin-arm64`     |
 | macOS Intel | `sovereignty-1.4.0-darwin-x64`       |
 | Windows x64 | `sovereignty-1.4.0-win-x64.exe`     |
 
-Fichier de sommes de contrôle : `checksums-<version>.txt` (format GNU coreutils).
+Fichier des sommes de contrôle : `checksums-<version>.txt` (format GNU coreutils).
 
-## Création d'une enveloppe
+## Création d’un paquet d’enveloppement
 
-Une enveloppe est un petit paquet npm (environ 3 fichiers) :
+Un paquet d’enveloppement est un petit paquet npm (environ 3 fichiers) :
 
-**package.json :**
+**package.json :**
 ```json
 {
   "name": "@mcptoolshop/sovereignty",
@@ -103,7 +103,7 @@ Une enveloppe est un petit paquet npm (environ 3 fichiers) :
 }
 ```
 
-**bin/sovereignty.js :**
+**bin/sovereignty.js :**
 ```js
 #!/usr/bin/env node
 process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
@@ -115,9 +115,9 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-Consultez le répertoire `examples/` pour obtenir des modèles d'enveloppes complets et le flux de travail CI.
+Voir `examples/sovereignty/` et `examples/xrpl-camp/` pour obtenir des modèles de paquet d’enveloppement complets, et `examples/ci/release-binaries.yml` pour un flux de travail CI PyInstaller.
 
-## Variables d'environnement
+## Variables d’environnement
 
 | Variable | Effet |
 |----------|--------|

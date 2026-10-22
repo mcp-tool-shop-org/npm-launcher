@@ -13,19 +13,19 @@
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-Lançador binário genérico para o npm, compatível com o GitHub. Ele baixa arquivos binários específicos para cada plataforma a partir das versões do GitHub, os armazena localmente, verifica as somas de verificação SHA256 e os executa, passando todos os argumentos.
+Lançador binário genérico GitHub para npm. Faz o download de binários específicos da plataforma a partir de GitHub Releases, armazena-os em cache localmente, verifica os SHA256 checksums e executa-os com total passagem de argumentos.
 
-Criado para que CLIs em Python (ou qualquer binário compilado) tenham uma distribuição `npx` sem dependências.
+Criado para que as CLIs Python (ou qualquer binário compilado) tenham uma distribuição sem dependências `npx`.
 
 ## Segurança e Modelo de Ameaças
 
-O `npm-launcher` baixa e executa binários. Veja o que ele acessa e o que não acessa:
+O npm-launcher faz o download e executa binários. Veja o que ele acessa e o que não:
 
-- **Rede:** Apenas HTTPS, para `github.com` e a CDN do GitHub. Nenhum outro destino.
-- **Sistema de arquivos:** Escreve apenas no cache local (`~/.cache/mcptoolshop/` ou `%LOCALAPPDATA%\mcptoolshop\`). Não modifica arquivos do sistema nem lê dados fora do cache.
-- **Verificação:** Cada binário é verificado em relação à soma SHA256 de um arquivo `checksums-<versão>.txt` na mesma versão. Se houver incompatibilidades, a execução é interrompida e o arquivo baixado é excluído.
-- **Sem telemetria.** Sem tratamento de segredos. Nenhuma credencial é armazenada ou transmitida.
-- **Permissões:** Nenhuma permissão especial é necessária, além do acesso normal do usuário ao sistema de arquivos e à conexão HTTPS de saída.
+- **Rede:** Apenas HTTPS, para `github.com` e a CDN de GitHub. Nenhum outro destino.
+- **Sistema de arquivos:** Escreve apenas no cache local (`~/.cache/mcptoolshop/` ou `%LOCALAPPDATA%\mcptoolshop\`). Não modifica arquivos do sistema nem lê fora do cache.
+- **Verificação:** Cada binário é verificado em relação a SHA256 a partir de um arquivo `checksums-<version>.txt` na mesma versão. Incompatibilidades interrompem a execução e excluem o arquivo baixado.
+- **Sem telemetria.** Sem tratamento de segredos. Sem credenciais armazenadas ou transmitidas.
+- **Permissões:** Nenhuma necessária além do acesso normal ao sistema de arquivos do usuário e HTTPS de saída.
 
 ## Como Funciona
 
@@ -57,41 +57,41 @@ npx @mcptoolshop/sovereignty tutorial
 npm install @mcptoolshop/npm-launcher
 ```
 
-Este pacote é uma biblioteca para pacotes de wrapper. Os usuários finais instalam o wrapper (por exemplo, `npx @mcptoolshop/sovereignty`), e não este pacote diretamente.
+Este pacote é uma biblioteca para pacotes de wrapper — os usuários finais instalam o wrapper (por exemplo, `npx @mcptoolshop/sovereignty`), e não este diretamente.
 
 ## Contrato de Configuração
 
-Os wrappers passam JSON puro através de `MCPTOOLSHOP_LAUNCH_CONFIG`. Sem funções, sem "mágica".
+Os wrappers passam JSON puro via `MCPTOOLSHOP_LAUNCH_CONFIG`. Sem funções, sem truques.
 
 | Campo | Obrigatório | Exemplo | Descrição |
 |------------|----------|------------------------|--------------------------------------|
 | `toolName` | sim | `"sovereignty"`        | Nome base do binário |
-| `owner`    | sim | `"mcp-tool-shop-org"`  | Organização/usuário do GitHub |
-| `repo`     | sim | `"sovereignty"`        | Nome do repositório do GitHub |
-| `version`  | sim | `"1.4.0"`              | Semver (sem o prefixo `v`) |
-| `tag`      | no       | `"v1.4.0"`             | Tag do Git (o padrão é `v<versão>`) |
+| `owner`    | sim | `"mcp-tool-shop-org"`  | GitHub org/usuário |
+| `repo`     | sim | `"sovereignty"`        | GitHub nome do repositório |
+| `version`  | sim | `"1.4.0"`              | Semver (sem prefixo `v`) |
+| `tag`      | no       | `"v1.4.0"`             | Tag Git (o padrão é `v<version>`) |
 | `quiet`    | no       | `true`                 | Suprimir mensagens de progresso |
 
-## Convenção de Nomenclatura de Arquivos
+## Convenção de Nomenclatura de Ativos
 
-Fixa. Todas as ferramentas seguem o mesmo padrão:
+Bloqueado. Todas as ferramentas seguem o mesmo padrão:
 
 ```
 <toolName>-<version>-<os>-<arch><ext>
 ```
 
-| Plataforma | Arquivo de Exemplo |
+| Plataforma | Exemplo de Ativo |
 |---------------|--------------------------------------|
 | Linux x64 | `sovereignty-1.4.0-linux-x64`        |
 | macOS ARM | `sovereignty-1.4.0-darwin-arm64`     |
 | macOS Intel | `sovereignty-1.4.0-darwin-x64`       |
 | Windows x64 | `sovereignty-1.4.0-win-x64.exe`     |
 
-Arquivo de checksums: `checksums-<versão>.txt` (formato GNU coreutils).
+Arquivo de checksums: `checksums-<version>.txt` (formato GNU coreutils).
 
 ## Criando um Wrapper
 
-Um wrapper é um pacote npm pequeno (~3 arquivos):
+Um wrapper é um pequeno pacote npm (~3 arquivos):
 
 **package.json:**
 ```json
@@ -115,7 +115,7 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-Veja a pasta `examples/` para modelos de wrappers completos e fluxo de trabalho de CI.
+Veja `examples/sovereignty/` e `examples/xrpl-camp/` para modelos completos de wrapper e `examples/ci/release-binaries.yml` para um fluxo de trabalho PyInstaller CI.
 
 ## Variáveis de Ambiente
 
