@@ -244,73 +244,89 @@ test("full launcher flow with local HTTP server", async () => {
 
 // -- #6: through a wrapper, --version and --help reach the tool --
 
-// A cached "tool" that is a copy of node: whatever node prints for a flag is
-// proof the flag reached the tool rather than the launcher.
-function seedCachedTool(t) {
+// A cached "tool" that is node itself: whatever node prints for a flag is
+// proof the flag reached the tool rather than the launcher. Seeded once for
+// the whole suite, as a hardlink where the filesystem allows one (Argon F2).
+let seeded = null;
+function seedCachedTool() {
+  if (seeded) return seeded;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "launcher-passthrough-"));
-  t.after(() => fs.rmSync(tmp, { recursive: true, force: true }));
-  const env = { ...process.env, LOCALAPPDATA: tmp, XDG_CACHE_HOME: tmp };
+  // Not after(): called inside a test, that would scope the cleanup to the
+  // first test that seeds, and the rest would find the tool gone.
+  process.on("exit", () => fs.rmSync(tmp, { recursive: true, force: true }));
   const target = resolveTarget();
   const dir = path.join(tmp, "mcptoolshop", "passthru", "9.9.9");
   fs.mkdirSync(dir, { recursive: true });
   const bin = path.join(dir, `passthru-9.9.9-${target.os}-${target.arch}${target.ext}`);
-  fs.copyFileSync(process.execPath, bin);
-  if (process.platform !== "win32") fs.chmodSync(bin, 0o755);
-  env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
-    toolName: "passthru", owner: "o", repo: "r", version: "9.9.9", quiet: true,
-  });
-  return env;
+  try {
+    fs.linkSync(process.execPath, bin);
+  } catch {
+    fs.copyFileSync(process.execPath, bin);
+    if (process.platform !== "win32") fs.chmodSync(bin, 0o755);
+  }
+  seeded = {
+    ...process.env,
+    LOCALAPPDATA: tmp,
+    XDG_CACHE_HOME: tmp,
+    MCPTOOLSHOP_LAUNCH_CONFIG: JSON.stringify({
+      toolName: "passthru", owner: "o", repo: "r", version: "9.9.9", quiet: true,
+    }),
+  };
+  return seeded;
 }
 
-test("--version via a wrapper reaches the tool", (t) => {
-  const env = seedCachedTool(t);
-  const out = execFileSync(process.execPath, [CLI_PATH, "--version"], { env, encoding: "utf8" });
-  assert.equal(out.trim(), process.version);
-  assert.ok(!out.includes("mcptoolshop-launch"));
-});
-
-test("-V via a wrapper is not answered by the launcher", (t) => {
-  const env = seedCachedTool(t);
-  // node rejects -V; what matters is that the launcher did not answer it.
-  let out = "";
+function runVia(env, args) {
   try {
-    out = execFileSync(process.execPath, [CLI_PATH, "-V"], {
+    const out = execFileSync(process.execPath, [CLI_PATH, ...args], {
       env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
     });
+    return { code: 0, out };
   } catch (err) {
-    out = `${err.stdout || ""}${err.stderr || ""}`;
+    return { code: err.status, out: `${err.stdout || ""}${err.stderr || ""}` };
   }
+}
+
+test("--version via a wrapper reaches the tool", () => {
+  const { code, out } = runVia(seedCachedTool(), ["--version"]);
+  assert.equal(code, 0, out);
+  assert.equal(out.trim(), process.version);
+});
+
+test("-V via a wrapper reaches the tool", () => {
+  // node rejects -V, which proves node received it (Argon F1).
+  const { code, out } = runVia(seedCachedTool(), ["-V"]);
+  assert.notEqual(code, 0);
+  assert.match(out, /bad option: -V/);
   assert.ok(!out.includes("mcptoolshop-launch"), out);
 });
 
 for (const flag of ["--help", "-h"]) {
-  test(`${flag} via a wrapper reaches the tool`, (t) => {
-    const env = seedCachedTool(t);
-    const out = execFileSync(process.execPath, [CLI_PATH, flag], { env, encoding: "utf8" });
+  test(`${flag} via a wrapper reaches the tool`, () => {
+    const { code, out } = runVia(seedCachedTool(), [flag]);
+    assert.equal(code, 0, out);
     assert.match(out, /Usage: node/);
     assert.ok(!out.includes("Generic GitHub-release binary launcher"));
   });
 }
 
-test("--launcher-version answers with or without a wrapper", (t) => {
-  const env = seedCachedTool(t);
+test("--launcher-version answers with or without a wrapper", () => {
   const expected = `mcptoolshop-launch ${pkg.version}`;
-  const viaWrapper = execFileSync(process.execPath, [CLI_PATH, "--launcher-version"], {
-    env, encoding: "utf8",
-  });
-  assert.equal(viaWrapper.trim(), expected);
-  const alone = execFileSync(process.execPath, [CLI_PATH, "--launcher-version"], {
-    encoding: "utf8",
-    env: { ...process.env, MCPTOOLSHOP_LAUNCH_CONFIG: "" },
-  });
-  assert.equal(alone.trim(), expected);
+  // It exits before reading the config, so no cached tool is needed.
+  const config = JSON.stringify({ toolName: "t", owner: "o", repo: "r", version: "1.0.0" });
+  const viaWrapper = runVia({ ...process.env, MCPTOOLSHOP_LAUNCH_CONFIG: config }, ["--launcher-version"]);
+  assert.equal(viaWrapper.out.trim(), expected);
+  const alone = runVia({ ...process.env, MCPTOOLSHOP_LAUNCH_CONFIG: "" }, ["--launcher-version"]);
+  assert.equal(alone.out.trim(), expected);
 });
 
-test("tool arguments after a flag still pass through in order", (t) => {
-  const env = seedCachedTool(t);
-  const out = execFileSync(
-    process.execPath, [CLI_PATH, "-e", "console.log(process.argv.slice(1).join('|'))", "--", "--help", "x"],
-    { env, encoding: "utf8" },
-  );
+test("tool arguments after a flag still pass through in order", () => {
+  const { out } = runVia(seedCachedTool(), [
+    "-e", "console.log(process.argv.slice(1).join('|'))", "--", "--help", "x",
+  ]);
   assert.equal(out.trim(), "--help|x");
+});
+
+test("the tool sees its own name as argv[0], not the asset's file name", () => {
+  const { out } = runVia(seedCachedTool(), ["-e", "console.log(process.argv0)"]);
+  assert.equal(out.trim(), "passthru");
 });

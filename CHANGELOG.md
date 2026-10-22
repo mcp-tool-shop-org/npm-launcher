@@ -16,11 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   `MCPTOOLSHOP_LAUNCH_CONFIG`), the launcher still answers them itself.
   Wrappers with a `^1` range pick this up on their next install.
 
+- **The tool sees its own name.** The binary is started with `argv[0]` set to
+  the tool's name, so a tool's help reads `Usage: xrpl-lab ...` rather than
+  `Usage: xrpl-lab-2.7.9-win-x64.exe ...`, the cached asset's file name. That
+  only became visible once `--help` reached the tool.
+
 ### Added
 
 - `--launcher-version` prints the launcher's version, with or without a
   wrapper.
-- Six pass-through tests (23 total), and a CI line-coverage floor at the
+- Seven pass-through tests (24 total), and a CI line-coverage floor at the
   measured level (target 90).
 
 ## [1.1.1] - 2026-03-25

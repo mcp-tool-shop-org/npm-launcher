@@ -124,7 +124,7 @@ async function ensureBinary(config) {
 async function launch(config, argv) {
   const args = argv.slice(2);
   const binPath = await ensureBinary(config);
-  const code = runBinary(binPath, args);
+  const code = runBinary(binPath, args, { argv0: config.toolName });
   process.exit(code);
 }
 
