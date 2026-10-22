@@ -13,19 +13,19 @@
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-npm用の汎用的なGitHubリリースバイナリランチャーです。GitHub Releasesからプラットフォーム固有のバイナリをダウンロードし、ローカルにキャッシュし、SHA256チェックサムを検証し、引数をそのまま渡して実行します。
+npm用の汎用的なGitHubリリースバイナリランチャー。プラットフォーム固有のバイナリをGitHubリリースからダウンロードし、ローカルにキャッシュし、SHA256チェックサムを検証し、すべての引数をそのまま渡して実行します。
 
-PythonのCLI（またはその他のコンパイル済みバイナリ）が、依存関係なしで`npx`で配布できるように設計されています。
+Python CLI（またはコンパイルされたバイナリ）が、依存関係なしで`npx`配布できるように構築されています。
 
 ## セキュリティと脅威モデル
 
-`npm-launcher`はバイナリをダウンロードして実行します。以下に、何にアクセスし、何にアクセスしないかを説明します。
+npm-launcherはバイナリをダウンロードして実行します。以下に、アクセスするものとアクセスしないものを示します。
 
-- **ネットワーク:** HTTPSのみを使用し、`github.com`とGitHubのCDNに接続します。他の宛先には接続しません。
-- **ファイルシステム:** ローカルキャッシュのみに書き込みます（`~/.cache/mcptoolshop/`または`%LOCALAPPDATA%\mcptoolshop\`）。システムファイルを変更したり、キャッシュ以外のファイルを読み込んだりしません。
-- **検証:** すべてのバイナリは、同じリリースに含まれる`checksums-<version>.txt`ファイルからのSHA256チェックサムと比較されます。不一致が見つかった場合、実行は中止され、ダウンロードしたファイルは削除されます。
-- **テレメトリーはありません。** 機密情報の取り扱いもありません。認証情報も保存または送信しません。
-- **権限:** 通常のユーザーがファイルシステムにアクセスしたり、HTTPSで外部に接続したりする権限以上の権限は必要ありません。
+- **ネットワーク:** HTTPSのみ。`github.com`とGitHubのCDNに接続します。それ以外の宛先はありません。
+- **ファイルシステム:** ローカルキャッシュ（`~/.cache/mcptoolshop/`または`%LOCALAPPDATA%\mcptoolshop\`）にのみ書き込みます。システムファイルを変更したり、キャッシュ外のファイルを読み取ったりすることはありません。
+- **検証:** すべてのバイナリは、同じリリースの`checksums-<version>.txt`ファイルにあるSHA256と比較してチェックされます。不一致の場合、実行は中止され、ダウンロードされたファイルは削除されます。
+- **テレメトリは行いません。** 機密情報の処理も行いません。資格情報は保存または送信されません。
+- **権限:** 通常のユーザーのファイルシステムアクセスとアウトバウンドHTTPS以上の権限は必要ありません。
 
 ## 仕組み
 
@@ -61,26 +61,26 @@ npm install @mcptoolshop/npm-launcher
 
 ## 設定契約
 
-ラッパーは、`MCPTOOLSHOP_LAUNCH_CONFIG`を介して純粋なJSONのみを渡します。関数や特殊な機能はありません。
+ラッパーは、純粋なJSONを`MCPTOOLSHOP_LAUNCH_CONFIG`経由で渡します。関数や特殊な処理はありません。
 
 | フィールド | 必須 | 例 | 説明 |
 |------------|----------|------------------------|--------------------------------------|
-| `toolName` | はい | `"sovereignty"`        | バイナリのベース名 |
-| `owner`    | はい | `"mcp-tool-shop-org"`  | GitHubの組織/ユーザー名 |
-| `repo`     | はい | `"sovereignty"`        | GitHubのリポジトリ名 |
-| `version`  | はい | `"1.4.0"`              | セマンティックバージョニング（`v`プレフィックスなし） |
-| `tag`      | no       | `"v1.4.0"`             | Gitタグ（デフォルトは`v<バージョン>`） |
-| `quiet`    | no       | `true`                 | プログレスメッセージを抑制 |
+| `toolName` | はい | `"sovereignty"`        | バイナリの基本名 |
+| `owner`    | はい | `"mcp-tool-shop-org"`  | GitHub org/user |
+| `repo`     | はい | `"sovereignty"`        | GitHub リポジトリ名 |
+| `version`  | はい | `"1.4.0"`              | Semver（`v`プレフィックスなし） |
+| `tag`      | no       | `"v1.4.0"`             | Gitタグ（デフォルトは`v<version>`） |
+| `quiet`    | no       | `true`                 | 進行状況メッセージを抑制 |
 
 ## アセットの命名規則
 
-固定されています。すべてのツールは同じパターンに従います。
+固定。すべてのツールは同じパターンに従います。
 
 ```
 <toolName>-<version>-<os>-<arch><ext>
 ```
 
-| プラットフォーム | アセットの例 |
+| プラットフォーム | 例：アセット |
 |---------------|--------------------------------------|
 | Linux x64 | `sovereignty-1.4.0-linux-x64`        |
 | macOS ARM | `sovereignty-1.4.0-darwin-arm64`     |
@@ -91,7 +91,7 @@ npm install @mcptoolshop/npm-launcher
 
 ## ラッパーの作成
 
-ラッパーは、非常に小さなnpmパッケージ（約3つのファイル）です。
+ラッパーは、小さなnpmパッケージ（約3ファイル）です。
 
 **package.json:**
 ```json
@@ -115,13 +115,13 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-完全なラッパーのテンプレートとCIワークフローについては、`examples/`ディレクトリを参照してください。
+完全なラッパーテンプレートについては、`examples/sovereignty/`と`examples/xrpl-camp/`を参照し、PyInstaller CIワークフローについては、`examples/ci/release-binaries.yml`を参照してください。
 
 ## 環境変数
 
 | 変数 | 効果 |
 |----------|--------|
-| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | プログレスメッセージを抑制（エラーは表示されます） |
+| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | 進行状況メッセージを抑制（エラーは引き続き表示されます） |
 
 ## サポートされているプラットフォーム
 
@@ -140,4 +140,4 @@ require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 
 ---
 
-作成者：<a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
+MCP Tool Shopによって構築されました <a href="https://mcp-tool-shop.github.io/"></a>

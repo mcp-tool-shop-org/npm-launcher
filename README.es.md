@@ -13,19 +13,19 @@
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-Lanzador binario genérico para npm que se descarga desde GitHub. Descarga archivos binarios específicos de la plataforma desde las versiones de GitHub, los almacena localmente, verifica las sumas de verificación SHA256 y los ejecuta con la transmisión completa de argumentos.
+Lanzador binario genérico GitHub para npm. Descarga binarios específicos de la plataforma de GitHub Releases, los almacena en caché localmente, verifica los SHA256 checksums y los ejecuta con el paso completo de argumentos.
 
-Diseñado para que las interfaces de línea de comandos (CLI) de Python (o cualquier binario compilado) tengan una distribución de `npx` sin dependencias.
+Diseñado para que las CLI de Python (o cualquier binario compilado) tengan una distribución sin dependencias `npx`.
 
 ## Seguridad y modelo de amenazas
 
-`npm-launcher` descarga y ejecuta binarios. Aquí está lo que toca y lo que no:
+npm-launcher descarga y ejecuta binarios. Esto es lo que afecta y lo que no:
 
 - **Red:** Solo HTTPS, a `github.com` y al CDN de GitHub. No hay otros destinos.
-- **Sistema de archivos:** Escribe solo en la caché local (`~/.cache/mcptoolshop/` o `%LOCALAPPDATA%\mcptoolshop\`). No modifica archivos del sistema ni lee fuera de la caché.
-- **Verificación:** Cada binario se verifica contra SHA256 de un archivo `checksums-<version>.txt` en la misma versión. Las discrepancias interrumpen la ejecución y eliminan el archivo descargado.
-- **Sin telemetría.** No hay manejo de secretos. No se almacenan ni transmiten credenciales.
-- **Permisos:** No se requieren permisos adicionales más allá del acceso normal del usuario al sistema de archivos y al HTTPS de salida.
+- **Sistema de archivos:** Escribe solo en la caché local (`~/.cache/mcptoolshop/` o `%LOCALAPPDATA%\mcptoolshop\`). No modifica los archivos del sistema ni lee fuera de la caché.
+- **Verificación:** Cada binario se verifica con SHA256 a partir de un archivo `checksums-<version>.txt` en la misma versión. Las discrepancias interrumpen la ejecución y eliminan el archivo descargado.
+- **Sin telemetría.** No se gestionan secretos. No se almacenan ni se transmiten credenciales.
+- **Permisos:** No se requieren permisos más allá del acceso normal al sistema de archivos del usuario y la comunicación HTTPS saliente.
 
 ## Cómo funciona
 
@@ -57,41 +57,41 @@ npx @mcptoolshop/sovereignty tutorial
 npm install @mcptoolshop/npm-launcher
 ```
 
-Este paquete es una biblioteca para paquetes de envoltura; los usuarios finales instalan el envoltura (por ejemplo, `npx @mcptoolshop/sovereignty`), no esto directamente.
+Este paquete es una biblioteca para paquetes de envoltura; los usuarios finales instalan el paquete de envoltura (por ejemplo, `npx @mcptoolshop/sovereignty`), no este directamente.
 
 ## Contrato de configuración
 
-Los envolturas pasan JSON puro a través de `MCPTOOLSHOP_LAUNCH_CONFIG`. Sin funciones, sin trucos.
+Los paquetes de envoltura pasan JSON puro a través de `MCPTOOLSHOP_LAUNCH_CONFIG`. No hay funciones, ni trucos.
 
-| Campo | Requerido | Ejemplo | Descripción |
+| Campo | Obligatorio | Ejemplo | Descripción |
 |------------|----------|------------------------|--------------------------------------|
 | `toolName` | sí | `"sovereignty"`        | Nombre base del binario |
-| `owner`    | sí | `"mcp-tool-shop-org"`  | Organización/usuario de GitHub |
-| `repo`     | sí | `"sovereignty"`        | Nombre del repositorio de GitHub |
+| `owner`    | sí | `"mcp-tool-shop-org"`  | GitHub org/usuario |
+| `repo`     | sí | `"sovereignty"`        | GitHub nombre del repositorio |
 | `version`  | sí | `"1.4.0"`              | Semver (sin prefijo `v`) |
-| `tag`      | no       | `"v1.4.0"`             | Etiqueta de Git (por defecto a `v<version>`) |
-| `quiet`    | no       | `true`                 | Suprimir mensajes de progreso |
+| `tag`      | no       | `"v1.4.0"`             | Etiqueta de Git (por defecto, `v<version>`) |
+| `quiet`    | no       | `true`                 | Suprimir los mensajes de progreso |
 
-## Convención de nombres de archivos
+## Convención de nomenclatura de activos
 
-Bloqueado. Todas las herramientas siguen el mismo patrón:
+Fijo. Todas las herramientas siguen el mismo patrón:
 
 ```
 <toolName>-<version>-<os>-<arch><ext>
 ```
 
-| Plataforma | Archivo de ejemplo |
+| Plataforma | Ejemplo de activo |
 |---------------|--------------------------------------|
 | Linux x64 | `sovereignty-1.4.0-linux-x64`        |
 | macOS ARM | `sovereignty-1.4.0-darwin-arm64`     |
 | macOS Intel | `sovereignty-1.4.0-darwin-x64`       |
 | Windows x64 | `sovereignty-1.4.0-win-x64.exe`     |
 
-Archivo de sumas de verificación: `checksums-<version>.txt` (formato de GNU coreutils).
+Archivo de checksums: `checksums-<version>.txt` (formato GNU coreutils).
 
-## Creación de un envoltura
+## Creación de un paquete de envoltura
 
-Un envoltura es un paquete npm pequeño (~3 archivos):
+Un paquete de envoltura es un pequeño paquete npm (~3 archivos):
 
 **package.json:**
 ```json
@@ -115,13 +115,13 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-Consulte `examples/` para obtener plantillas de envoltura completas y flujo de trabajo de CI.
+Consulte `examples/sovereignty/` y `examples/xrpl-camp/` para obtener plantillas completas de paquetes de envoltura, y `examples/ci/release-binaries.yml` para un flujo de trabajo PyInstaller CI.
 
 ## Variables de entorno
 
 | Variable | Efecto |
 |----------|--------|
-| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | Suprimir mensajes de progreso (los errores aún se imprimen) |
+| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | Suprimir los mensajes de progreso (los errores siguen mostrándose) |
 
 ## Plataformas compatibles
 

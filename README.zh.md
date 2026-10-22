@@ -13,19 +13,19 @@
   <a href="https://mcp-tool-shop-org.github.io/npm-launcher/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
 </p>
 
-这是一个通用的 GitHub 发布二进制文件启动器，用于 npm。它从 GitHub 发布页面下载特定平台的二进制文件，将它们缓存在本地，验证 SHA256 校验和，并以完整参数传递的方式运行它们。
+用于 npm 的通用 GitHub 发布二进制启动器。它从 GitHub 发布中下载特定平台的二进制文件，将其缓存在本地，验证 SHA256 校验和，并使用完整的参数传递功能运行它们。
 
-该工具旨在使 Python 命令行工具（或任何编译后的二进制文件）能够以零依赖的方式通过 `npx` 进行分发。
+构建方式使得 Python 命令行工具（或任何编译后的二进制文件）可以实现零依赖的 `npx` 分发。
 
-## 安全性和威胁模型
+## 安全与威胁模型
 
-`npm-launcher` 下载并执行二进制文件。以下是它所涉及的内容以及它不涉及的内容：
+npm-launcher 下载并执行二进制文件。以下是它访问的内容以及它不访问的内容：
 
-- **网络：** 仅使用 HTTPS，连接到 `github.com` 和 GitHub 的 CDN。 不连接到其他目标地址。
-- **文件系统：** 仅写入本地缓存目录 (`~/.cache/mcptoolshop/` 或 `%LOCALAPPDATA%\mcptoolshop\`)。 不修改系统文件，也不读取缓存目录以外的文件。
-- **验证：** 每个二进制文件都与同一发布页面中的 `checksums-<version>.txt` 文件的 SHA256 值进行比较。 如果不匹配，则中止执行并删除下载的文件。
-- **无遥测。** 不处理任何密钥。 不存储或传输任何凭据。
-- **权限：** 仅需要正常的用户文件系统访问权限和出站 HTTPS 连接权限。
+- **网络：** 仅使用 HTTPS 连接到 `github.com` 和 GitHub 的 CDN。没有其他目标地址。
+- **文件系统：** 仅写入本地缓存（`~/.cache/mcptoolshop/` 或 `%LOCALAPPDATA%\mcptoolshop\`）。不修改系统文件或读取缓存之外的文件。
+- **验证：** 每个二进制文件都会与同一发布中的 `checksums-<version>.txt` 文件中的 SHA256 进行比较。如果校验不匹配，则中止执行并删除下载的文件。
+- **无遥测数据。** 不处理任何敏感信息。不存储或传输任何凭据。
+- **权限：** 除了正常的用户文件系统访问权限和出站 HTTPS 连接之外，不需要其他权限。
 
 ## 工作原理
 
@@ -57,24 +57,24 @@ npx @mcptoolshop/sovereignty tutorial
 npm install @mcptoolshop/npm-launcher
 ```
 
-此包是一个用于包装程序的库——最终用户安装包装程序（例如 `npx @mcptoolshop/sovereignty`），而不是直接安装此包。
+此软件包是一个用于包装软件包的库——最终用户安装包装器（例如 `npx @mcptoolshop/sovereignty`），而不是直接安装此软件包。
 
-## 配置接口
+## 配置约定
 
-包装程序通过 `MCPTOOLSHOP_LAUNCH_CONFIG` 传递纯 JSON 数据。 不支持任何函数或魔法操作。
+包装器通过 `MCPTOOLSHOP_LAUNCH_CONFIG` 传递纯 JSON 数据。没有函数，也没有任何特殊功能。
 
-| 字段 | 是否必需 | 示例 | 描述 |
+| 字段 | 必需 | 示例 | 描述 |
 |------------|----------|------------------------|--------------------------------------|
-| `toolName` | 是 | `"sovereignty"`        | 二进制文件基础名称 |
-| `owner`    | 是 | `"mcp-tool-shop-org"`  | GitHub 组织/用户名 |
+| `toolName` | 是 | `"sovereignty"`        | 二进制文件基本名称 |
+| `owner`    | 是 | `"mcp-tool-shop-org"`  | GitHub 组织/用户 |
 | `repo`     | 是 | `"sovereignty"`        | GitHub 仓库名称 |
-| `version`  | 是 | `"1.4.0"`              | 语义版本号（不带 `v` 前缀） |
+| `version`  | 是 | `"1.4.0"`              | 语义版本（没有 `v` 前缀） |
 | `tag`      | no       | `"v1.4.0"`             | Git 标签（默认为 `v<version>`） |
-| `quiet`    | no       | `true`                 | 抑制进度消息 |
+| `quiet`    | no       | `true`                 | 禁止显示进度消息 |
 
 ## 资源命名约定
 
-已锁定。 所有工具都遵循相同的模式：
+固定。所有工具都遵循相同的模式：
 
 ```
 <toolName>-<version>-<os>-<arch><ext>
@@ -87,13 +87,13 @@ npm install @mcptoolshop/npm-launcher
 | macOS Intel | `sovereignty-1.4.0-darwin-x64`       |
 | Windows x64 | `sovereignty-1.4.0-win-x64.exe`     |
 
-校验和文件：`checksums-<version>.txt` (GNU coreutils 格式)。
+校验和文件：`checksums-<version>.txt`（GNU coreutils 格式）。
 
-## 编写包装程序
+## 编写包装器
 
-一个包装程序是一个非常小的 npm 包（约 3 个文件）：
+一个包装器是一个小的 npm 软件包（约 3 个文件）：
 
-**package.json:**
+**package.json：**
 ```json
 {
   "name": "@mcptoolshop/sovereignty",
@@ -103,7 +103,7 @@ npm install @mcptoolshop/npm-launcher
 }
 ```
 
-**bin/sovereignty.js:**
+**bin/sovereignty.js：**
 ```js
 #!/usr/bin/env node
 process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
@@ -115,13 +115,13 @@ process.env.MCPTOOLSHOP_LAUNCH_CONFIG = JSON.stringify({
 require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 ```
 
-请参阅 `examples/` 目录，了解完整的包装程序模板和 CI 工作流程。
+有关完整的包装器模板，请参阅 `examples/sovereignty/` 和 `examples/xrpl-camp/`，有关 PyInstaller CI 工作流程，请参阅 `examples/ci/release-binaries.yml`。
 
 ## 环境变量
 
 | 变量 | 效果 |
 |----------|--------|
-| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | 抑制进度消息（错误仍然会显示） |
+| `MCPTOOLSHOP_LAUNCHER_QUIET=1` | 禁止显示进度消息（错误仍然会打印） |
 
 ## 支持的平台
 
@@ -140,4 +140,4 @@ require("@mcptoolshop/npm-launcher/bin/mcptoolshop-launch.js");
 
 ---
 
-由 <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a> 构建。
+由 <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a> 构建
