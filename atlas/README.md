@@ -1,14 +1,14 @@
 # npm-launcher: how it works
 
-Mapped at 2026-10-22 from commit 51a04b3 by Atlas 1.24.0.
+Mapped at 2026-11-11 from commit 1957985 by Atlas 1.26.0.
 
 ## What this is
 
 10 parts, mostly JavaScript (15 files), CSS (2), TypeScript (2), Astro (1) and shell (1). Work enters through 10 doors; the busiest is CI, which reaches 3 parts. It publishes @mcptoolshop/npm-launcher, @mcptoolshop/backpropagate (examples/backpropagate), @mcptoolshop/sovereignty (examples/sovereignty), @mcptoolshop/xrpl-camp (examples/xrpl-camp) and @mcptoolshop/xrpl-lab (examples/xrpl-lab) to npm. It deploys a site to GitHub Pages. People run backpropagate, mcptoolshop-launch, sovereignty, xrpl-camp and xrpl-lab. People import @mcptoolshop/npm-launcher.
 
-## What changed since 2026-09-30 (7269308)
+## What changed since 2026-10-22 (51a04b3)
 
-Nothing structural changed since 2026-09-30; 7 files changed content.
+Nothing structural changed since 2026-10-22; 22 files changed content.
 
 ## What comes in
 
@@ -95,6 +95,8 @@ People write .github/, the repository root and site/. Nothing in this repository
 .github/workflows/ci.yml → bin/mcptoolshop-launch.js → src/index.js → src/log.js
 
 Read those in order to follow one pull request end to end.
+
+Beside the path, src/index.js also calls src/platform.js, src/cache.js, src/lock.js, src/github.js and 2 more files.
 
 ## What this map cannot see
 
